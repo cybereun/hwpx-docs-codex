@@ -1,33 +1,61 @@
-# hwpx-docs-codex
+# HWPX Docs for Codex
 
-Codex skill port of [BlackBuddle/hwpx-docs](https://github.com/BlackBuddle/hwpx-docs), a toolkit for creating, reading, editing, checking, and previewing Hancom HWPX documents.
+[![Codex Skill](https://img.shields.io/badge/Codex-Skill-5B5BD6)](https://github.com/cybereun/hwpx-docs-codex)
+[![HWPX](https://img.shields.io/badge/Format-HWPX-2D8CFF)](https://github.com/cybereun/hwpx-docs-codex)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-AGPL--3.0--or--later-blue)](LICENSE)
 
-The upstream HWPX engine, documentation, examples, templates, and specialist skill guides are included. The Codex entrypoint routes HWPX requests to the relevant guide and keeps the runtime files together so commands work after installation.
+Codex에서 한컴오피스 한글용 HWPX 문서를 만들고, 읽고, 수정하고, 검사할 수 있는 스킬입니다. JSON 스펙으로 문서를 구성하며, 표·도형·그림·차트와 페이지 설정을 지원합니다.
 
-## Install
+이 저장소는 [BlackBuddle/hwpx-docs](https://github.com/BlackBuddle/hwpx-docs)를 Codex에서 사용할 수 있도록 포팅한 프로젝트입니다. 원본 엔진과 전문 가이드의 출처 및 라이선스는 [NOTICE.md](NOTICE.md)를 확인해 주세요.
 
-Install this repository as a single global Codex skill at `~/.codex/skills/hwpx-docs` (or `$CODEX_HOME/skills/hwpx-docs` when `CODEX_HOME` is set). On Windows, run `install.ps1` from the cloned repository. On macOS or Linux, run `bash install.sh`.
+## 주요 기능
 
-You can also clone the repository directly into the skill directory:
+- JSON 스펙으로 HWPX 문서를 만들고, 기존 HWPX를 읽어 다시 편집합니다.
+- 받은 신청서나 양식을 채우고, 문서의 텍스트를 Markdown으로 추출합니다.
+- Markdown·HTML을 HWPX로 변환하고, 표·도형·그림·한글 차트를 넣습니다.
+- 용지 크기, 여백, 다단, 머리말·꼬리말, 쪽 번호를 설정합니다.
+- 문서 구조와 가독성을 확인하고, 한글 또는 내장 미리보기로 페이지를 확인합니다.
+- 요청에 따라 개인정보 가리기, HWP 변환, 문서 암호·배포용 문서를 처리합니다. 일부 기능은 Windows와 한컴오피스 한글이 필요합니다.
+
+스킬은 공통 안내와 11개 전문 가이드로 구성되어 있습니다. 세부 주제는 [skills/](skills/)에서 확인할 수 있습니다.
+
+## Codex 설치
+
+Python 3.10 이상이 필요합니다. 기본 설치 경로는 `~/.codex/skills/hwpx-docs`이며, `CODEX_HOME`이 지정되어 있으면 `$CODEX_HOME/skills/hwpx-docs`를 사용합니다.
+
+### Windows PowerShell
 
 ```powershell
 $codexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $env:USERPROFILE '.codex' }
-$skillDir = Join-Path $codexHome 'skills\hwpx-docs'
-New-Item -ItemType Directory -Force -Path (Split-Path $skillDir -Parent) | Out-Null
-git clone https://github.com/cybereun/hwpx-docs-codex.git $skillDir
+$skillsDir = Join-Path $codexHome 'skills'
+New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
+git clone https://github.com/cybereun/hwpx-docs-codex.git (Join-Path $skillsDir 'hwpx-docs')
 ```
+
+### macOS / Linux
 
 ```sh
 mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
 git clone https://github.com/cybereun/hwpx-docs-codex.git "${CODEX_HOME:-$HOME/.codex}/skills/hwpx-docs"
 ```
 
-Start a new Codex session after installing. Python 3.10+ is required. HWPX creation and reading use the Python standard library; Hangul rendering, HWP conversion, and password protection have additional Windows/Hangul requirements described in the skill guides.
+저장소를 이미 내려받았다면 Windows에서는 `.\install.ps1`, macOS/Linux에서는 `bash install.sh`를 실행해 설치할 수도 있습니다. 설치 후 새 Codex 세션을 열고 “이 내용을 한 페이지 HWPX로 만들어줘”처럼 요청하면 됩니다. 스킬은 `SKILL.md`가 있는 폴더 전체를 함께 설치해야 실행 코드와 문서 참조가 유지됩니다.
 
-## Included workflows
+### 필요한 환경
 
-The root `SKILL.md` is the Codex entrypoint. Detailed upstream guides remain in `skills/` and cover core documents, text, tables, objects, page setup, form reconstruction, editing, official letters, security, and readability. Keep the package together: the guides refer to the included `lib/`, `docs/`, `presets/`, and `templates/` directories.
+- Python 3.10 이상: 문서 생성·읽기·수정·대부분의 검사
+- 한컴오피스 한글이 설치된 Windows: 한글에서 렌더링, HWP 변환, 문서 암호·배포용 문서 처리
+- 한글이 없는 환경에서도 내장 미리보기와 기본 HWPX 작업을 사용할 수 있습니다.
 
-## License and attribution
+## 개발자 및 문의
 
-This is a derivative distribution of BlackBuddle/hwpx-docs. It retains the upstream `AGPL-3.0-or-later` licensing terms and attribution; see [NOTICE.md](NOTICE.md) and [LICENSE](LICENSE). The Codex-specific packaging does not transfer ownership of upstream material.
+- Codex 포트 및 유지관리: [Lebi (@cybereun)](https://github.com/cybereun)
+- 문의와 버그 제보: [GitHub Issues](https://github.com/cybereun/hwpx-docs-codex/issues)
+- 원본 프로젝트 및 엔진: [BlackBuddle/hwpx-docs](https://github.com/BlackBuddle/hwpx-docs)
+
+Codex 포트의 개발자 정보는 이 저장소의 변경분을 가리킵니다. 원본 엔진·문서·예제의 저작권과 출처는 원저작자에게 있습니다.
+
+## 라이선스와 배포
+
+이 프로젝트에는 원본 `hwpx-docs`의 엔진, 가이드, 예제와 자료가 포함되어 있으며 `AGPL-3.0-or-later` 조건으로 배포됩니다. 재배포할 때는 LICENSE와 원본 출처 고지를 함께 유지하고, 수정·배포하는 버전도 해당 AGPL 조건을 지켜 주세요. 자세한 내용은 [LICENSE](LICENSE)와 [NOTICE.md](NOTICE.md)를 확인하세요.
