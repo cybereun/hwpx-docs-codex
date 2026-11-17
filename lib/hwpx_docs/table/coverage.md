@@ -1,6 +1,6 @@
 # Coverage rows of the table package (C5 items of this milestone)
 
-Same columns as `docs/coverage.md`. Rule ids TB01-TB09 are in `rules.md` of this folder; files are in `fixtures/` (49, creator
+Same columns as `docs/coverage.md`. Rule ids TB01-TB11 are in `rules.md` of this folder; files are in `fixtures/` (49, creator
 `hwpx-docs`). Hangul jobs: `hd table-samples window | window2 | window3 <dir>` (one hidden Hangul batch each). Status 2026-11-14 after windows 1-3: `RT` = read -> build -> Hangul render, ink difference 0.00 (56 of 56 fixtures); `H-resave` =
 the builder's file opened and saved again by Hangul: same XML back (11 hand-built files, window 3 included).
 

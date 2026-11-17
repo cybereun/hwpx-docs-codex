@@ -6,7 +6,10 @@ Rules this module keeps:
 - It never ships, downloads, installs or registers a DLL, and never answers Hangul's file-access prompt
   ("한글을 이용하여 위 파일에 접근하려는 시도 ..."). That prompt comes when Hangul OPENS an existing file; only
   the user answers it ("모두 허용" = allow for this Hangul session). While it is open during Open(), the
-  watchdog waits up to `prompt_wait` seconds; with no answer it closes it (= deny) and the batch stops.
+  watchdog waits up to `prompt_wait` seconds; with no answer it ends that Hangul instance (= deny; no window message is
+  sent, because a WM_CLOSE can be an answer) and the batch stops. During Open() ONLY that prompt (Hangul's own WPF window
+  without readable text) is left to the user; the document security window and every other window end the instance, and
+  a file that did so is not opened again (HW110).
   Use one Hwp session for a batch of files, so the user answers once per batch.
 - Opt-in, OFF by default: if the USER installed Hancom's official automation security module and set
   the environment variable HWPX_DOCS_SECURITY_MODULE (old name HWPX_DOCS_MODULE) to its registry value name
@@ -33,6 +36,7 @@ import time
 
 
 SECURITY_KEY = r'Software\HNC\HwpAutomation\Modules'
+CFB_SIGNATURE = bytes([0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1])       # the first 8 bytes of a compound file (.hwp)
 
 
 def security_module(hwp):
@@ -76,6 +80,14 @@ def selftest():
     finally:
         os.environ.pop('HWPX_DOCS_SECURITY_MODULE', None)
         os.environ.update({k: v for k, v in old.items() if v is not None})
+    assert is_security_dialog('한글', ['문서 보안 설정', '보안 수준 높음', '확인'])      # the settings window: end the instance
+    assert is_security_dialog('문서 보안 설정', []) and not is_security_dialog('한글', ['확인', '취소'])
+    wpf = 'HwndWrapper[Hwp.exe;;00000000-0000-0000-0000-000000000000]'
+    assert identify_dialog(wpf, '', []) == 'access'                                  # Hangul's WPF window, no readable text
+    assert identify_dialog('#32770', '', []) == 'other'                              # a standard box: ends the instance
+    assert identify_dialog(wpf, '한글', ['이 문서를 열까요?']) == 'other'            # a WPF window with a question: not the prompt
+    assert identify_dialog('#32770', '문서 보안 설정', []) == 'security'
+    assert identify_dialog(wpf, 'Security', ['Security level: High']) == 'other'      # another UI language: never left to the user
     print('HWPCOM SELFTEST PASS')
 
 
@@ -114,6 +126,25 @@ def dialogs(pid, with_handle=False):
     return out
 
 
+def is_security_dialog(title, texts):
+    """Hangul's document security settings window (a script / macro in the document): its title or a text has these words."""
+    return any('문서 보안' in t or '보안 수준' in t for t in [title, *texts])
+
+
+WPF_CLASS = 'HwndWrapper[Hwp.exe;;'
+
+
+def identify_dialog(cls, title, texts):
+    """'security' (the document security settings window), 'access' (Hangul's own WPF window with no readable text: the file-access
+    prompt, the only window that is left to the user during Open()) or 'other' (anything else: it ends the Hangul instance;
+    HW110)."""
+    if is_security_dialog(title, texts):
+        return 'security'
+    if cls.startswith(WPF_CLASS) and not texts:
+        return 'access'
+    return 'other'
+
+
 def _capture(hwnd, path):
     """Save an image of one window (diagnostics for popups)."""
     try:
@@ -144,6 +175,9 @@ class Hwp:
         self._opening = False          # True during Open(): a popup then is the file-access prompt
         self.prompted = set()          # access prompts shown to the user (window handles)
         self.prompt_timeout = False    # the user did not answer an access prompt in time
+        self.current = ''              # the file Open() is working on (for the log lines)
+        self.security_dialog = None    # the file whose opening raised Hangul's "문서 보안 설정" window (the instance was ended)
+        self.unknown_dialog = None     # the file whose opening raised a window nobody can name (the instance was ended)
 
     # ---- session -------------------------------------------------------------------------
     def __enter__(self):
@@ -160,9 +194,10 @@ class Hwp:
         if not self.visible:
             _hide(self.main_hwnd)          # COM has no "start hidden": hide at the first moment we hold the window
         # Answer message boxes automatically, so a hidden box cannot block:
-        # 0x1 = OK (MB_OK), 0x10 = OK (MB_OKCANCEL), 0x2000 = No (YESNOCANCEL), 0x20000 = No (YESNO).
-        # A repair question gets "No", so Open() of a damaged file returns False (see open()).
-        self.hwp.SetMessageBoxMode(0x00022011)
+        # 0x1 = OK (MB_OK), 0x20 = Cancel (MB_OKCANCEL), 0x2000 = No (YESNOCANCEL), 0x20000 = No (YESNO).
+        # A repair question gets "No", an OK / Cancel question "Cancel": a file of someone else never gets a "yes" from here, so
+        # Open() of a damaged file returns False (see open()). (HW110: before, OK / Cancel was answered with OK, 0x10.)
+        self.hwp.SetMessageBoxMode(0x00022021)
         self._hidden = {}                  # popups hidden by the watchdog: hwnd -> (first seen, class, title, texts)
         self._stop = threading.Event()
         threading.Thread(target=self._watch, daemon=True).start()
@@ -177,11 +212,23 @@ class Hwp:
                 # SaveAs is only hidden, never closed (closing it cancels the save; no file is written).
                 now = time.time()
                 seen = {}
-                self._close_hidden(now)
+                if self._close_hidden(now):
+                    return
                 for cls, title, texts, hwnd in dialogs(self.pid, with_handle=True):
                     if hwnd == self.main_hwnd or title.endswith(' - 한글'):
                         _hide(hwnd)        # our own document window became visible (seen after some actions)
                         continue
+                    kind = identify_dialog(cls, title, texts)
+                    if kind == 'security':
+                        # The document-security settings window ("보안 수준 높음 / 낮음"): a setting only the user changes.
+                        # Never answered here: an image first, then THIS instance (found by its own window) is ended.
+                        shot = os.path.join(tempfile.gettempdir(), f'hwpcom_security_{self.pid}.bmp')
+                        _capture(hwnd, shot)
+                        self.security_dialog = self.current or '?'
+                        print(f'SECURITY DIALOG {self.security_dialog} (image saved: {shot}); this Hangul instance is ended', flush=True)
+                        subprocess.run(['taskkill', '/F', '/PID', str(self.pid)], capture_output=True)
+                        self.killed = True
+                        return
                     if not self._opening:
                         if hwnd not in self._hidden:
                             shot = os.path.join(tempfile.gettempdir(), f'hwpcom_popup_{self.pid}_{len(self._hidden) + 1}.bmp')
@@ -190,6 +237,18 @@ class Hwp:
                             print('HANGUL POPUP hidden (image saved):', shot, flush=True)
                         _hide(hwnd)                                 # again if Hangul shows it again
                         continue
+                    if kind == 'other':
+                        # During Open() only the file-access prompt is left to the user. Any other window (another language of the
+                        # security window, a notice, a box nobody has seen) might be a question about the document: nobody
+                        # answers it, no WM_CLOSE (that would be an answer); this instance is ended (HW110).
+                        shot = os.path.join(tempfile.gettempdir(), f'hwpcom_unknown_{self.pid}.bmp')
+                        _capture(hwnd, shot)
+                        self.unknown_dialog = self.current or '?'
+                        print(f'UNKNOWN DIALOG {self.unknown_dialog} class {cls!r} title {title!r} (image saved: {shot}); '
+                              f'this Hangul instance is ended', flush=True)
+                        subprocess.run(['taskkill', '/F', '/PID', str(self.pid)], capture_output=True)
+                        self.killed = True
+                        return
                     seen[hwnd] = self._first_seen.get(hwnd, now)
                     if self._opening and not self.prompt_timeout:
                         # Hangul's file-access prompt (a WPF window: its text cannot be read). Only the user
@@ -201,8 +260,11 @@ class Hwp:
                         if now - seen[hwnd] < self.prompt_wait:
                             self._deadline = max(self._deadline or 0, time.time() + 30)
                             continue
-                        self.prompt_timeout = True      # no answer: close it (= deny); the batch stops
-                        print('HANGUL ACCESS PROMPT: no answer; closed (= deny)', flush=True)
+                        self.prompt_timeout = True      # no answer: the instance is ended (= deny, no window message); the batch stops
+                        print('HANGUL ACCESS PROMPT: no answer; this Hangul instance is ended (= deny)', flush=True)
+                        subprocess.run(['taskkill', '/F', '/PID', str(self.pid)], capture_output=True)
+                        self.killed = True
+                        return
                     elif now - seen[hwnd] < 8:
                         continue
                     if (cls, title, texts) not in self.closed:
@@ -210,12 +272,8 @@ class Hwp:
                         shot = os.path.join(tempfile.gettempdir(), f'hwpcom_popup_{self.pid}_{len(self.closed)}.bmp')
                         _capture(hwnd, shot)
                         print('HANGUL POPUP (image saved):', shot)
-                    try:
-                        import win32con
-                        import win32gui
-                        win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0)
-                    except Exception:
-                        pass
+                    if self._close_popup(hwnd):
+                        return
                 self._first_seen = seen
             if self._deadline and time.time() > self._deadline and self.pid:
                 self.blocked_by = dialogs(self.pid)
@@ -224,9 +282,28 @@ class Hwp:
                 self.killed = True
                 return
 
+    def _close_popup(self, hwnd):
+        """WM_CLOSE for a popup, after the window is read AGAIN: its text may have come late, and a document security window
+        must never be answered. Returns True when this instance was ended instead."""
+        import win32con
+        import win32gui
+        try:
+            texts = []
+            win32gui.EnumChildWindows(hwnd, lambda h, t: (t.append(win32gui.GetWindowText(h)) if win32gui.GetWindowText(h) else None) or True,
+                                      texts)
+            if is_security_dialog(win32gui.GetWindowText(hwnd), texts):
+                self.security_dialog = self.current or '?'
+                print(f'SECURITY DIALOG {self.security_dialog} (seen again before closing); this Hangul instance is ended', flush=True)
+                subprocess.run(['taskkill', '/F', '/PID', str(self.pid)], capture_output=True)
+                self.killed = True
+                return True
+            win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0)
+        except Exception:
+            pass
+        return False
+
     def _close_hidden(self, now):
         """A popup that was hidden and still exists after 8 s blocks Hangul: close it (it is logged on exit)."""
-        import win32con
         import win32gui
         for hwnd, (t0, cls, title, texts) in list(self._hidden.items()):
             if not win32gui.IsWindow(hwnd):
@@ -234,11 +311,10 @@ class Hwp:
             elif now - t0 >= 8:
                 if (cls, title, texts) not in self.closed:
                     self.closed.append((cls, title, texts))
-                try:
-                    win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0)
-                except Exception:
-                    pass
                 del self._hidden[hwnd]
+                if self._close_popup(hwnd):
+                    return True
+        return False
 
     def guard(self, seconds=None):
         """Restart the watchdog clock before a call that can block."""
@@ -322,9 +398,41 @@ class Hwp:
         shutil.copyfile(tmp, path)     # Hangul keeps the saved file open, so copy (a move fails)
         return ok
 
-    def open(self, path, fmt='HWPX', seconds=60):
-        """Open a file. Returns True only if Hangul opened it with no blocking prompt."""
+    def _safe_copy(self, path):
+        """The path Hangul opens: a copy of an .hwp / .hwpx without its macros and without links that leave the package or this PC
+        (`hwp5.safecopy`, rule HW108), made in a temporary folder that goes at exit. The one place where every command that opens a
+        file in Hangul (render, convert, secure, the checks) gets this; no command has an option of its own. None when the file is
+        refused (two entries of one name, a damaged structure). Any other kind of file (or a file that does not exist) is opened as it is."""
+        if not os.path.isfile(path):
+            return path
+        with open(path, 'rb') as f:
+            head = f.read(8)
+        ext = '.hwpx' if head[:2] == b'PK' else '.hwp' if head == CFB_SIGNATURE else None
+        if ext is None:
+            return path
+        from ..hwp5 import safecopy
+        dst = os.path.join(tmpdir.mkdtemp('hwpcom_safe_'), 'copy' + ext)
+        try:
+            report = safecopy.copy(path, dst)
+        except (safecopy.UnsafeFile, ValueError) as e:
+            print(f'OPEN REFUSED {os.path.basename(path)}: {e}', flush=True)
+            return None
+        if report['scripts']:
+            print(f'NOTE {os.path.basename(path)}: Hangul opens a copy without the macro of the document; a file saved from it has no macro',
+                  flush=True)
+        if report['links'] or report.get('items'):
+            print(f'NOTE {os.path.basename(path)}: Hangul opens a copy without linked pictures (paths outside the file)', flush=True)
+        return dst
+
+    def open(self, path, fmt='HWPX', seconds=60, safe=True):
+        """Open a file. Returns True only if Hangul opened it with no blocking prompt. Hangul opens a SAFE COPY of an .hwp / .hwpx
+        (`_safe_copy`); `safe=False` only for a file this code wrote itself a moment ago."""
         self.guard(seconds)
+        self.current = os.path.basename(path)
+        if safe:
+            path = self._safe_copy(path)
+            if path is None:
+                return False
         self._opening = True
         try:
             ok = bool(self.hwp.Open(os.path.abspath(path), fmt, 'forceopen:true'))
@@ -336,12 +444,12 @@ class Hwp:
         finally:
             self._opening = False
         self._deadline = None
-        return ok and not self.killed
+        return ok and not self.killed and not self.security_dialog and not self.unknown_dialog
 
-    def page_images(self, out_stem, dpi=96, fmt='bmp'):
-        """Write one image per page: <out_stem>_p<N>.<fmt>. Returns the list of paths."""
+    def page_images(self, out_stem, dpi=96, fmt='bmp', limit=None):
+        """Write one image per page (the first `limit` pages): <out_stem>_p<N>.<fmt>. Returns the list of paths."""
         paths = []
-        for n in range(self.hwp.PageCount):
+        for n in range(min(self.hwp.PageCount, limit or self.hwp.PageCount)):
             p = os.path.abspath(f'{out_stem}_p{n + 1}.{fmt}')
             self.guard()
             self.hwp.CreatePageImage(p, n, dpi, 24, fmt)
@@ -382,6 +490,13 @@ def run_jobs(items, job, timeout=90, retries=2):
                     result.update({x: False for x in todo})
                     print('STOP: the file-access prompt was not answered;', len(todo), 'file(s) not done')
                     return result
+                if h.security_dialog or h.unknown_dialog:
+                    # a file that ended Hangul with a security / unknown window is never opened again: the answer would
+                    # be the same, and each try is one more chance for a macro; the next file gets a new Hangul
+                    print('NOT RETRIED', item, '-', 'security window' if h.security_dialog else 'unknown window')
+                    result[item] = False
+                    todo.pop(0)
+                    break
                 blocked = h.killed or len(h.closed) > n_closed
                 if not ok and blocked and tries.get(item, 0) < retries:
                     tries[item] = tries.get(item, 0) + 1

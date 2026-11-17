@@ -3,6 +3,7 @@
 Public interface (other packages use only these):
   preview.render_pages(path, dpi=96) -> [(width mm, height mm, svg text)]   one SVG per page (no Edge needed)
   preview.render_files(path, out_dir, dpi=96, png=True) -> [png path]       SVG + HTML (+ PNG through Edge) files
+  backend 'specpages': flow.render_spec(spec, pic_dir, dpi) -> pages of a spec (hwp5); `hangul_lines` (rules P19)
 Commands (registered, core/registry.py): `hd preview <in.hwpx> [out_dir] [--dpi 96] [--no-png]`; the same renderer is
 the `preview` (alias `own`) backend of `hd render hwpx <file> --backend preview`; `--backend auto` = Hangul when it is
 installed, else preview.
@@ -23,6 +24,7 @@ COMMANDS = {
 }
 BACKENDS = {'render': {'preview': 'cli:render_backend', 'own': 'cli:render_backend'},
             'pages': {'preview': 'cli:pages_backend'},     # hd render hwpx f --backend preview
+            'specpages': {'preview': 'flow:render_spec'},  # a spec that did not come from an HWPX (hwp5)
             'blocks': {'preview': 'blocks:section_atoms'},
             'pagereport': {'preview': 'report:page_report'}}  # what the layout makes of each block (pagefit; blocks.py)
 

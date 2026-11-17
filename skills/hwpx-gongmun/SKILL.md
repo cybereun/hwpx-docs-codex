@@ -1,6 +1,6 @@
 ---
 name: hwpx-gongmun
-description: Korean official documents as HWPX — 공문 (기안문, 시행문, 내부결재) from a data template with the 행정업무운영 편람 item levels, and 개조식 보고서 from Markdown. Use for 공문 만들기, 기안문, 시행문, 공고문, 보도자료, 통지서, 개조식 보고서를 한글 파일로. Text rules come from skill gongmun-style.
+description: Korean official documents as HWPX or HWP — 공문 (기안문, 시행문, 내부결재) from a data template with the 행정업무운영 편람 item levels, and 개조식 보고서 from Markdown. Use for 공문 만들기, 기안문, 시행문, 공고문, 보도자료, 통지서, 개조식 보고서를 한글 파일로. Text rules come from skill gongmun-style.
 ---
 
 # 공문 and 개조식 보고서

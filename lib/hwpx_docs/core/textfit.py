@@ -56,9 +56,20 @@ class _GDI:
 
 
 class _Estimate:
-    """Without Windows GDI: a CJK character 1 em, a space 0.3 em, other characters 0.55 em (rough)."""
+    """Without Windows GDI: a CJK character 1 em, a space 0.3 em, other characters 0.55 em (rough). Symbols that
+    Korean fonts draw full width (East Asian width W, F or A: ① ○ □ ※ “ ” ․ …; not the Latin-1 letters) are 1 em
+    too: at 0.55 em the next character was drawn over them."""
     def em(self, ch, face, bold):
-        return 1.0 if cjk(ch) else 0.3 if ch == ' ' else 0.55
+        if cjk(ch):
+            return 1.0
+        if ch == ' ':
+            return 0.3
+        o = ord(ch)
+        if o >= 0x2000 or (0xA1 <= o < 0xC0 and o not in (0xAA, 0xBA)) or o in (0xD7, 0xF7):
+            import unicodedata
+            if unicodedata.east_asian_width(ch) in ('W', 'F', 'A'):
+                return 1.0
+        return 0.55
 
 
 _gdi = None

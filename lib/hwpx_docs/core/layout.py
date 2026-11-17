@@ -37,6 +37,8 @@ class Layout:
 
     def __init__(self, spec):
         self.spec = spec
+        from ..table import inline
+        inline.resolve(spec)        # a table without `inline` is a character unless it flows (TB11), as the builder decides
         self.paras, self.cells, self.tables = [], [], []
         self.lost = []              # (where, table, block, side, pt): space that Hangul ignores next to a table
         self.styles = spec.get('styles', {})

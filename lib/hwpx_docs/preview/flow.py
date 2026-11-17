@@ -387,7 +387,8 @@ def lay_section(ctx, sec, first_no, fixed=None):
             e = r + 1
             while e in T['bad']:
                 e += 1
-            if ahead + 0.05 < sum(x.h for x in T['atoms'][r:e]) <= full:
+            need = T.get('gneed', {}).get(r) or sum(x.h for x in T['atoms'][r:e])
+            if ahead + 0.05 < need <= full:
                 return 'move'
         return None
 
@@ -496,7 +497,7 @@ def lay_section(ctx, sec, first_no, fixed=None):
 
     def adopt(a, first):
         """Row atom `a` becomes the first part of its cut (P18): the trace keeps its atom (report.page_report)."""
-        a.h, a.emit, a.shut, a.cut = first.h, first.emit, first.shut, None
+        a.h, a.emit, a.shut, a.cut, a.trail = first.h, first.emit, first.shut, None, first.trail
         return a
 
     def goes_on(a):
@@ -538,12 +539,13 @@ def lay_section(ctx, sec, first_no, fixed=None):
                 if 0 < T['hdr'] <= a.row and (a.cut is not None or
                                               sum(x.h for x in T['atoms'][:T['hdr']]) + a.h <= g['y1'] - g['y0']):
                     x = g['x0'] + st['col'] * (cw + gap)
+                    st['y'] += T['mc'] - T['mt']        # the header rows again: their first row has the table's top margin in it
                     for hr in T['atoms'][:T['hdr']]:
                         if hr.emit:
                             hr.emit(x, st['y'], st['page'])
                         st['y'] += hr.h
                 else:
-                    st['y'] += T['mt']
+                    st['y'] += T['mc']
                 st['top'] = (st['page'], st['col'], st['y'])
                 continue
             new = around(a)
@@ -595,11 +597,12 @@ def lay_section(ctx, sec, first_no, fixed=None):
                 rep.add(col)                            # a table going on at a column top: header rows or outer margin
                 hdr = T['atoms'][:T['hdr']] if 0 < T['hdr'] <= a.row and (
                     a.cut is not None or sum(x.h for x in T['atoms'][:T['hdr']]) + a.h <= h) else []
+                y += T['mc'] - T['mt'] if hdr else 0.0
                 for hr in hdr:
                     if place_at is not None and hr.emit:
                         hr.emit(g['x0'] + col * (w + gp), place_at + y, st['page'])
                     y += hr.h
-                y = ctop = y if hdr else T['mt']
+                y = ctop = y if hdr else T['mc']
                 continue
             if a.cut is not None and (top or c not in cut) and y + need(a) > h + 0.05:
                 got = a.cut(h - y - a.tbl.get('foot', 0.0), top, cell_cut)
@@ -767,6 +770,15 @@ def render_pages(path, dpi=96):
         return [(p.g['w'], p.g['h'], page_svg(p)) for p in ctx.pages]
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+
+
+def render_spec(spec, pic_dir, dpi=96):
+    """A spec (pictures in pic_dir) -> list of (width mm, height mm, svg text): the pages of a document that was not
+    read from an HWPX (hwp5: a .hwp read as a spec, with Hangul's own line starts `hangul_lines`)."""
+    set_min_line(25.4 / dpi)
+    drawers.prepare(spec, pic_dir)
+    ctx = lay_out(spec, pic_dir)
+    return [(p.g['w'], p.g['h'], page_svg(p)) for p in ctx.pages]
 
 
 class Trace:

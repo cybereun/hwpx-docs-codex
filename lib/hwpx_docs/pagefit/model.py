@@ -54,6 +54,8 @@ def load(path):
     tmp = tmpdir.mkdtemp('hwpx_pagefit_')
     if path.lower().endswith('.json'):
         spec = json.load(open(path, encoding='utf-8'))
+        from ..table import inline
+        inline.resolve(spec)                      # a table without `inline` is a character unless it flows (TB11): the layout sees what the builder writes
         return spec, os.path.dirname(os.path.abspath(path))
     return read.read(path, os.path.join(tmp, 'spec.json')), tmp
 

@@ -1,6 +1,6 @@
 ---
 name: hwpx-from-image
-description: Reproduce a form exactly from an image or a description as an HWPX — measure lines, grid and text bands in mm, write a fidelity checklist, build, render in Hangul, overlay and fix until no offset is over 0.5 mm. Use for 이 양식 그대로 만들어줘, 이미지 보고 한글 문서로, 서식 재현, HWP form from image.
+description: Reproduce a form exactly from an image or a description as an HWPX or HWP file — measure lines, grid and text bands in mm, write a fidelity checklist, build, render in Hangul, overlay and fix until no offset is over 0.5 mm. Use for 이 양식 그대로 만들어줘, 이미지 보고 한글 문서로, 서식 재현, HWP form from image.
 ---
 
 # Form from an image

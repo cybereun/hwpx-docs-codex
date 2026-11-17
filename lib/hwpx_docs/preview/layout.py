@@ -143,24 +143,42 @@ class Ctx:
         return text
 
 
-def items_of(ctx, b, cst, pp):
-    """Paragraph -> list of (char, width pt, style, obj). obj: None, or a dict for an inline object / note."""
+def items_of(ctx, b, cst, pp, units=None):
+    """Paragraph -> list of (char, width pt, style, obj). obj: None, or a dict for an inline object / note.
+    units: a list that gets, per item, its content unit (rules P19: one per text character, one per inline object,
+    note, page number or equation; -1 for a bullet or number in front)."""
     items = []
+    unit = [0]
 
-    def text(t, st):
-        for ch in t:
+    def text(t, st, one=False):
+        for k, ch in enumerate(t):
             items.append((ch, 0.0 if ch == '\n' else cwidth(ch, st), st, None))
+            if units is not None:
+                units.append(unit[0])
+                if not one:
+                    unit[0] += 1
+        if one and t:
+            unit[0] += 1
+
+    def object_unit(n_items):              # an object or note: one unit for all its items
+        if units is not None:
+            units.extend([unit[0]] * n_items)
+            unit[0] += 1 if n_items else 0
     pre = ctx.prefix(pp)
     if pre:
         text(pre + ' ', cst)
         if pp['indent'] < 0:       # hanging indent: the text starts where the wrapped lines start
             w = sum(i[1] for i in items)
             items[-1] = (' ', max(0.0, -pp['indent'] - (w - items[-1][1])), cst, None)
+        if units is not None:
+            units[:] = [-1] * len(items)
+            unit[0] = 0
     p = b.get('p', '')
     for r in ([p] if isinstance(p, str) else (p or [])):
         if isinstance(r, str):
             text(r, cst)
             continue
+        before = len(items)
         st = char_style(cst, r)
         obj = None if ('pic' in r or 'table' in r) else object_of(r, st)
         if 'pic' in r:
@@ -184,23 +202,54 @@ def items_of(ctx, b, cst, pp):
                 items.append((ch, cwidth(ch, s2), s2, dict(kind='note', n=n, end=end, mark=mark, on_page=on_page,
                                                            blocks=r.get('footnote') or r.get('endnote')) if k == 0 else None))
         elif 'page_num' in r:
-            text(str(ctx.pageno), st)
+            text(str(ctx.pageno), st, one=True)
+            continue
         elif 'equation' in r:
             e = r['equation']
-            text(e.get('script', ''), dict(st, italic=True))
+            text(e.get('script', ''), dict(st, italic=True), one=True)
+            continue
         elif 'new_page_num' in r:
             ctx.pageno = r['new_page_num'] - 1       # takes effect on the next page
         elif any(k in r for k in ('xml', 'bookmark')):
             pass
         else:
             text(r.get('t', ''), st)
+            continue
+        object_unit(len(items) - before)
     return items
+
+
+def hinted_lines(b, items, units, pp, width_mm):
+    """Hangul's own line starts (spec `hangul_lines`, rules P19) as item ranges, or None when they do not fit the
+    paragraph (a unit past the end, not increasing, or a line over 2.5 times its box: then the preview wraps)."""
+    hints = b.get('hangul_lines')
+    if hints is None or units is None or not items:
+        return None
+    starts = [0]
+    for u in hints:
+        k = next((i for i, x in enumerate(units) if x >= u), None)
+        if k is None or k <= starts[-1]:
+            return None
+        starts.append(k)
+    lines = list(zip(starts, starts[1:] + [len(items)]))
+    first, other = textfit.widths(pp, width_mm)
+    for n, (s, e) in enumerate(lines):
+        seg = items[s:e]
+        while seg and seg[-1][0] in ' \n':
+            seg = seg[:-1]
+        if sum(i[1] for i in seg) > 2.5 * (first if n == 0 else other) + 1:
+            return None
+        if any(it[0] == '\n' for it in items[s:e - 1]):
+            return None                    # a forced line break inside a line: the hints are not this text
+    return lines
 
 
 def layout_para(ctx, b, cs, width_mm, no_before=False):
     pp = para_style(b)
     cst = char_style(cs, b)
-    items = items_of(ctx, b, cst, pp)
+    units = [] if b.get('hangul_lines') is not None else None
+    items = items_of(ctx, b, cst, pp, units)
+    forced = hinted_lines(b, items, units, pp, width_mm)
     segs, cur = [], []
     for it in items:                       # a forced line break splits the paragraph for wrapping
         if it[0] == '\n':
@@ -214,11 +263,14 @@ def layout_para(ctx, b, cs, width_mm, no_before=False):
         _, ls = textfit.wrap_chars(seg, pp, width_mm)
         lines += [(off + s, off + e) for s, e in ls]
         off += len(seg)
+    if forced:
+        lines = forced
     # items without the '\n' items positions: rebuild a flat list that wrap indexes refer to
     flat = [i for seg in segs for i in seg]
     # no_before: True after a block table (W05), or the mm of room under the objects of the paragraph before (P11)
     before = 0 if no_before is True else max(0.0, pp['before'] * PT - (no_before or 0))
     para = Para(ctx, b, pp, cst, flat, width_mm, before, pp['after'] * PT)
+    para.forced = bool(forced)
     atoms = [para.row([para.line(s, e, k == 0, k == len(lines) - 1)], s) for k, (s, e) in enumerate(lines)]
     shapes = para.shapes
     if pp.get('border') or pp.get('fill'):                 # one block: border/fill around the whole paragraph
@@ -249,6 +301,7 @@ class Para:
         self.zero = dict(pp, left=0, right=0, indent=0)
         self.origin = self.pin = None
         self.boxed = False
+        self.forced = False      # lines from Hangul's own layout (P19): a line wider than its box is fitted into it
 
     def line(self, s, e, first, last, dx=None, avail=None):
         """Line of items s..e: text height, pitch, and where it sits (dx, avail mm from the column left; default: the
@@ -267,7 +320,7 @@ class Para:
             ind = max(pp['indent'], 0) if first else max(-pp['indent'], 0)
             dx, avail = (pp['left'] + ind) * PT, self.width - (pp['left'] + pp['right'] + ind) * PT
         return dict(seg=seg, vs=vs, base=BASE * vs, pitch=pitch, first=first, last=last, dx=dx, avail=avail,
-                    align=pp['align'], origin=pp['left'] * PT, tabs=self.tabs)
+                    align=pp['align'], origin=pp['left'] * PT, tabs=self.tabs, fit=self.forced)
 
     def row(self, parts, start):
         """The atom of one row: its lines side by side (more than one when an object splits the row), first item `start`."""
@@ -411,6 +464,9 @@ def emit_line(ctx, line, x, y, page):
     natural = sum(i[1] for i in seg[:te]) * PT
     avail = line['avail']
     al = line['align']
+    scale = 1.0
+    if line.get('fit') and natural > avail > 0 and not any(i[0] == '\t' for i in seg):
+        scale, natural = avail / natural, avail      # Hangul put these characters on one line: our widths are too wide
     extra, per_space, per_char = 0.0, 0.0, 0.0
     shift = 0.0
     if al == 'center':
@@ -447,7 +503,7 @@ def emit_line(ctx, line, x, y, page):
             xs.append(cx)
             continue
         xs.append(cx)
-        cx += w * PT
+        cx += w * PT * scale
         if k < te - 1:
             cx += per_char + (per_space if ch == ' ' else 0)
         if obj and obj.get('kind') == 'note':
@@ -563,13 +619,16 @@ def emit_pic(ctx, p, x, y, page):
 def layout_blocks(ctx, blocks, cs, width_mm):
     """Public (page layers and drawers may call it): spec blocks -> atoms (a.h mm, a.emit(x, y, page)) for a column
     `width_mm` wide, with the char style `cs` (dict(core.read.DEF_CHAR) or the style around)."""
-    atoms, after_table, carry = [], False, []
+    atoms, after_table, carry, pend = [], False, [], []
     for b in blocks:
         if carry and isinstance(b, dict) and 'p' in b:       # the text of their paragraph: they are anchored to it
             b, carry = dict(b, shapes=list(b.get('shapes') or []) + carry), []
         elif carry:
             atoms += layout_para(ctx, {'p': '', 'shapes': carry}, cs, width_mm, after_table)
             carry = []
+        if isinstance(b, dict) and b.get('same_para') and flow_table(b, width_mm) is not None:
+            pend.append(b)                      # a table that flows (Hangul cuts it at page ends): under the text of its paragraph
+            continue
         got = floating(ctx, b, cs, width_mm) if isinstance(b, dict) and b.get('same_para') else None
         if got:                                 # a floating object in the same paragraph as the next block (rules S26)
             carry += got
@@ -579,9 +638,33 @@ def layout_blocks(ctx, blocks, cs, width_mm):
         after_table = isinstance(b, dict) and 'table' in b       # Hangul drops the 'before' of the paragraph after a table (rules W05)
         if not after_table and new and new[-1].absorb:
             after_table = new[-1].absorb                          # the next 'before' falls into the room under objects (P11)
+        if pend and isinstance(b, dict) and 'p' in b:
+            for tb in pend:                     # its offset from the top of the paragraph counts from there, down to the text's end
+                atoms += layout_block(ctx, flow_table(tb, width_mm, sum(a.h for a in new)), cs, width_mm, False)
+            pend, after_table = [], True
+    for tb in pend:
+        atoms += layout_block(ctx, flow_table(tb, width_mm), cs, width_mm, after_table)
     if carry:
         atoms += layout_para(ctx, {'p': '', 'shapes': carry}, cs, width_mm, after_table)
     return atoms
+
+
+def flow_table(b, w, drop=0.0):
+    """A table block anchored to its paragraph that flows with the text (hwp5 `pos.flow`, top_and_bottom wrap) is an ordinary table
+    that Hangul cuts at page ends: its offsets become margins (the y offset less `drop`, the height of the text above it) and
+    halign its alignment (kps-ai: a table of contents over two pages, a heading with its table). The block with that done, or
+    None when the table floats as an object (table/draw.py)."""
+    t = b.get('table') if isinstance(b, dict) else None
+    pos = t.get('pos') if isinstance(t, dict) else None
+    if not (pos and pos.get('flow') and pos.get('vrel', pos.get('rel')) == 'para' and pos.get('hrel', pos.get('rel')) in ('column', 'para')
+            and t.get('wrap', 'top_and_bottom') == 'top_and_bottom' and pos.get('valign', 'top') == 'top'
+            and -5 <= pos.get('x', 0) <= w / 2 and pos.get('y', 0) >= -5):
+        return None                 # a table put aside (negative offset, far to the right) is a floating object
+    m = list(t.get('margin') or [1.0, 1.0, 1.0, 1.0])
+    off = max(0.0, pos.get('y', 0) - drop)
+    t = dict({k: v for k, v in t.items() if k != 'pos'}, margin=[max(0.0, m[0] + pos.get('x', 0)), m[1], m[2] + off, m[3]],
+             align=pos.get('halign', 'left'), margin_cont=t.get('margin_cont', m[2]))
+    return dict({k: v for k, v in b.items() if k not in ('same_para', 'page_break')}, table=t)     # the text starts the page, not the table
 
 
 def floating_pic(p):
@@ -721,8 +804,9 @@ def layout_table(ctx, t, cs, avail, align='left', inline=False):
             blocks = d['blocks']
         else:
             base = {k: v for k, v in d.items() if (k in rd.CHAR_KEYS or k in rd.PARA_KEYS) and k not in ('border', 'fill')}
+            # the hwp5 reader (`hangul_lines`): one paragraph, its '\n' are line breaks, not paragraph ends
             blocks = [dict(base, p=s) for s in str(d.get('p', '')).split('\n')] if isinstance(d.get('p', ''), str) \
-                else [dict(base, p=d['p'])]
+                and 'hangul_lines' not in d else [dict(base, p=d['p'])]
         at = layout_blocks(ctx, blocks, cs2, inner)
         ce['atoms'], ce['pad'] = at, pad
         ce['ch'] = sum(a.h for a in at) - (at[-1].trail if at else 0) + pad[2] + pad[3]
@@ -798,10 +882,10 @@ def layout_table(ctx, t, cs, avail, align='left', inline=False):
         rh = heights[r] if body is None else max(inner(body[id(ce)]) + ce['pad'][2] + ce['pad'][3] for ce in mine)
         keys = [(r, 0.0)] + ([(nrow, rh)] if r == nrow - 1 else [])
         a = A(rh + top_m + bot_m, lambda x, y, page: paint(x, y, page, r, mine, top_m, rh, keys, body))
-        a.tbl, a.row = T, r
+        a.tbl, a.row = T, uid[r]
         if r < nrow - 1:                                # the next row draws the edge below; at a page end the flow does
             a.shut = lambda x, y, page: hline(page, r + 1, x + off, y + a.h)
-        if T['pb'] == 'cell' and r >= T['hdr'] and r not in merged and mine:
+        if T['pb'] == 'cell' and r >= hdr_rows and r not in merged and mine:
             a.cut = lambda avail, top, plan: cut(r, mine, top_m, bot_m, body, avail, top, plan)
         return a
 
@@ -817,19 +901,198 @@ def layout_table(ctx, t, cs, avail, align='left', inline=False):
         one = {k: v[:n[k]] for k, v in body.items()}
         ph = max([inner(one[id(ce)]) + ce['pad'][2] + ce['pad'][3] for ce in mine] + given_h)
         p = A(top_m + ph, lambda x, y, page: paint(x, y, page, r, mine, top_m, ph, [(r, 0.0)], one))
-        p.tbl, p.row = T, r
+        p.tbl, p.row = T, uid[r]
         p.shut = lambda x, y, page: hline(page, r + 1, x + off, y + p.h)
         return p, row(r, 0.0, bot_m, {k: v[n[k]:] for k, v in body.items()})
 
-    # for the page flow (rules P17, P18, pagefit PF02): how the table may be cut; a cut before a row inside a merged group
-    # is not allowed; the header rows come again on the next page, under the table's outer margin (mt)
+    # ---- rows tied by row spans (rs): in a `page_break` cell table Hangul cuts them like any rows (rules P18), so such a group
+    # of rows is one atom whose cut may fall between its rows or inside one; a cell that crosses the cut goes on in the rest
+    def hline_all(page, key, tx, yy, side):
+        """The edge at row boundary `key`: the table edges H, and where a cell crosses it (no edge there) the `side` ('top' /
+        'bottom') line of that cell, as Hangul draws a cell cut at a page end."""
+        lns = []
+        for c in range(len(cols)):
+            if (key, c) in H:
+                lns.append(H[(key, c)])
+                continue
+            ce = next((e for e in cells if e['c'] <= c < e['c'] + e['cs'] and
+                       e['r'] <= (key if side == 'top' else key - 1) < e['r'] + e['rs']), None)
+            lns.append(ce['sides'][side] if ce else None)
+        c = 0
+        while c < len(cols):
+            e = c + 1
+            while e < len(cols) and lns[e] == lns[c]:
+                e += 1
+            if lns[c]:
+                stroke(page, tx + cx[c], yy, tx + cx[e], yy, lns[c])
+            c = e
+
+    def rowh(R, body, rest0, cap=None):
+        """Heights of the rows R (consecutive) of a group, each cell's atoms from `body` (id -> atoms, else all): the rows' own
+        heights (a rest part has none), the cells of one row, then a cell over rows that end in R takes what it lacks in its
+        last row (the preview's natural heights when R is the whole group). cap: the room the last row's own height may take."""
+        hs = [0.0 if (k == 0 and rest0) else given[r] for k, r in enumerate(R)]
+        if cap is not None:
+            hs[-1] = min(hs[-1], cap)
+        for ce in cells:
+            if ce['rs'] == 1 and R[0] <= ce['r'] <= R[-1]:
+                k = ce['r'] - R[0]
+                hs[k] = max(hs[k], inner(body.get(id(ce), ce['atoms'])) + ce['pad'][2] + ce['pad'][3])
+        for ce in cells:
+            if ce['rs'] > 1 and R[0] < ce['r'] + ce['rs'] <= R[-1] + 1 and ce['r'] <= R[-1]:
+                a, b = max(ce['r'], R[0]) - R[0], ce['r'] + ce['rs'] - R[0]
+                ats = body.get(id(ce), ce['atoms'])
+                lack = (inner(ats) + ce['pad'][2] + ce['pad'][3] if ats else 0.0) - sum(hs[a:b])
+                if lack > 0:
+                    hs[b - 1] += lack
+        return hs
+
+    def upaint(x, y, page, R, hs, body, cont, top_m):
+        tx, ty = x + off, y + top_m
+        yk = [ty]
+        for h in hs:
+            yk.append(yk[-1] + h)
+        span = []
+        for ce in cells:
+            t0, t1 = max(ce['r'], R[0]) - R[0], min(ce['r'] + ce['rs'], R[-1] + 1) - R[0]
+            if t0 < t1:
+                span.append((ce, t0, t1))
+        for ce, t0, t1 in span:
+            fill = ce['d'].get('fill')
+            if fill:
+                fw, fh = cx[ce['c'] + ce['cs']] - cx[ce['c']], yk[t1] - yk[t0]
+                rect(page, tx + cx[ce['c']], yk[t0], fw, fh, drawers.paint(ctx, page, fill, fw, fh))
+        for k, r in enumerate(R):
+            if k == 0 and cont:
+                hline_all(page, r, tx, yk[0], 'top')
+            else:
+                hline(page, r, tx, yk[k])
+        if R[-1] == nrow - 1:
+            hline(page, nrow, tx, yk[-1])
+        for k, r in enumerate(R):
+            for c in range(len(cols) + 1):
+                ln = V.get((r, c))
+                if ln:
+                    stroke(page, tx + cx[c], yk[k], tx + cx[c], yk[k + 1], ln)
+        for ce, t0, t1 in span:
+            d, pad = ce['d'], ce['pad']
+            x0, y0 = tx + cx[ce['c']], yk[t0]
+            w, h = cx[ce['c'] + ce['cs']] - cx[ce['c']], yk[t1] - yk[t0]
+            dl = parse_line(d.get('diag_line', 'none'))
+            if d.get('diag') and dl:
+                if d['diag'] in ('slash', 'both'):
+                    stroke(page, x0, y0 + h, x0 + w, y0, dl, ext=False)
+                if d['diag'] in ('back', 'both'):
+                    stroke(page, x0, y0, x0 + w, y0 + h, dl, ext=False)
+            ats = body.get(id(ce), ce['atoms'])
+            va = d.get('valign', 'center')
+            yy = y0 + pad[2] + (0 if va == 'top' else (h - pad[2] - pad[3] - inner(ats)) / (2 if va == 'center' else 1))
+            for a in ats:
+                if a.emit:
+                    a.emit(x0 + pad[0], yy, page)
+                yy += a.h
+
+    def unit(R, body, cont, rest0, top_m, bot_m, last=None, cap=None):
+        """The atom of the rows R of a group (body: the atoms left of the cells a cut left; cont: cells that come from above
+        R; rest0: the first row is the rest of a cut row; last: the height of the last row when a cut stretches it)."""
+        hs = rowh(R, body, rest0, cap)
+        if last is not None:
+            hs[-1] = last
+        a = A(top_m + sum(hs) + bot_m, lambda x, y, page: upaint(x, y, page, R, hs, body, cont, top_m))
+        a.tbl, a.row = T, uid[R[0]]
+        a.trail = 0.0 if R[-1] == nrow - 1 else -margin[3]      # a part of the table keeps the table's outer margin below it at a
+        #                                                         page end (tallcell_table_k32: need() = h + margin; P18)
+        if R[-1] < nrow - 1:
+            a.shut = lambda x, y, page: hline_all(page, R[-1] + 1, x + off, y + a.h, 'bottom')
+        if T['pb'] == 'cell' and R[0] >= hdr_rows:
+            a.cut = lambda avail, top, plan: ucut(R, body, cont, rest0, top_m, bot_m, avail, top, plan)
+        return a
+
+    def ucut(R, body, cont, rest0, top_m, bot_m, avail, top, plan):
+        """Cut the group's rows R at a page end `avail` mm below their top -> (first part, rest), or None (rules P18). The
+        table keeps its outer margin below at the page end (end = avail - margin). The row that does not fit is cut inside
+        its cells when a cell of its own has a line that fits (the cells that cross it too); else the rows before it are the
+        first part, stretched to `end` (a cell over several rows crosses the cut)."""
+        end = avail - margin[3]
+        hs = rowh(R, body, rest0)
+        ys = [top_m]
+        for h in hs:
+            ys.append(ys[-1] + h)
+        k = next((i for i in range(len(R)) if ys[i + 1] > end + 0.05), None)
+        if k is None:
+            return None
+        act = []
+        for ce in cells:
+            t0, t1 = max(ce['r'], R[0]) - R[0], min(ce['r'] + ce['rs'], R[-1] + 1) - R[0]
+            if t0 < t1:
+                act.append((ce, t0, t1))
+        ats = {id(ce): body.get(id(ce), ce['atoms']) for ce, _, _ in act}
+        n = {}
+        for ce, t0, t1 in act:
+            if t1 <= k:
+                n[id(ce)] = len(ats[id(ce)])                # above the cut: whole
+            elif t0 > k:
+                n[id(ce)] = 0                               # starts after row k: whole in the rest
+            else:
+                n[id(ce)] = plan(ats[id(ce)], end - ys[t0] - ce['pad'][2] - ce['pad'][3] - 0.12, top and t0 == 0)   # 0.12: the bottom border
+        here = [(ce, t0, t1) for ce, t0, t1 in act if t0 <= k < t1]
+        inside = any(n[id(ce)] > 0 for ce, t0, t1 in here if t0 == k)
+        whole = all(n[id(ce)] == len(ats[id(ce)]) for ce, t0, t1 in here)
+        if k == 0 and not inside:
+            return None
+        # 'in': row k is cut inside its cells; 'fit': row k stays whole, its own height cut short to the page end (Hangul
+        # keeps a row whose text fits, plain_cell_k28); 'before': the rows before row k are the first part
+        mode = 'before' if not inside else 'in' if not whole else 'fit'
+        one, left = {}, {}
+        for ce, t0, t1 in here:
+            if mode != 'before' or t0 < k:
+                one[id(ce)], left[id(ce)] = ats[id(ce)][:n[id(ce)]], ats[id(ce)][n[id(ce)]:]
+        Rf = R[:k] if mode == 'before' else R[:k + 1]
+        Rr = R[k + 1:] if mode == 'fit' else R[k:]
+        fb, nb = {**body, **one}, {**body, **left}
+        crossing = bool(Rr) and any(ce['r'] < Rr[0] < ce['r'] + ce['rs'] for ce, t0, t1 in here)
+        if mode == 'before':
+            first = unit(Rf, fb, cont, rest0, top_m, 0.0, last=end - ys[k - 1])
+        else:
+            first = unit(Rf, fb, cont, rest0, top_m, 0.0, last=end - ys[k] if mode == 'fit' and crossing else None, cap=end - ys[k])
+        first.cut, first.trail = None, 0.0                  # it ends at the page end: nothing more has to fit
+        if not Rr:
+            return first, A(0.0)
+        more = {id(ce) for ce in cells if ce['r'] < Rr[0] < ce['r'] + ce['rs']}
+        return first, unit(Rr, nb, more, mode == 'in', 0.0, bot_m)
+
+    # for the page flow (rules P17, P18, pagefit PF02): how the table may be cut; the header rows come again on the next page,
+    # under the table's outer margin (mt)
     merged = {r for ce in cells if ce['rs'] > 1 for r in range(ce['r'], ce['r'] + ce['rs'])}
     # a table that holds its paragraph on its page (hold, holdAnchorAndSO) or sits as a character (inline) is not cut (P18)
-    T = dict(pb='none' if t.get('hold') or t.get('inline') is True else str(t.get('page_break', 'cell')).lower(),
-             hold=bool(t.get('hold')), rep=set(), mt=margin[2],
-             hdr=int(t.get('header_rows', 0) or 0) if t.get('repeat_header', True) else 0,
-             bad={r for ce in cells if ce['rs'] > 1 for r in range(ce['r'] + 1, ce['r'] + ce['rs'])})
-    T['atoms'] = [row(r, margin[2] if r == 0 else 0, margin[3] if r == nrow - 1 else 0) for r in range(nrow)]
+    pb = 'none' if t.get('hold') or t.get('inline') is True else str(t.get('page_break', 'cell')).lower()
+    hdr_rows = int(t.get('header_rows', 0) or 0) if t.get('repeat_header', True) else 0
+    groups, r0 = [], 0
+    while r0 < nrow:
+        e, i = r0 + 1, r0
+        while i < e:
+            e = max([e] + [ce['r'] + ce['rs'] for ce in cells if ce['r'] == i and ce['rs'] > 1])
+            i += 1
+        groups.append((r0, e))
+        r0 = e
+    packed = pb == 'cell' and any(e - s > 1 for s, e in groups)     # a group of rows is one atom (it may be cut inside)
+    uid = {r: (i if packed else r) for i, (s, e) in enumerate(groups) for r in range(s, e)}
+    # the gap above a table that goes on at the top of a page or column (mc): the outer margin it has without the offset that
+    # Hangul puts it down from its paragraph (the hwp5 reader keeps it as `margin_cont`); delegation pages 8-31: 0.5 mm, not 4.5
+    mc = float(t['margin_cont']) if t.get('margin_cont') is not None else min(margin[2], 1.0)
+    T = dict(pb=pb, hold=bool(t.get('hold')), rep=set(), mt=margin[2], mc=mc,
+             hdr=sum(1 for s, e in groups if s < hdr_rows) if packed else hdr_rows,
+             bad=set() if packed else {r for ce in cells if ce['rs'] > 1 for r in range(ce['r'] + 1, ce['r'] + ce['rs'])})
+    if packed:
+        T['atoms'] = [unit(list(range(s, e)), {}, (), False, margin[2] if s == 0 else 0, margin[3] if e == nrow else 0)
+                      if e - s > 1 else row(s, margin[2] if s == 0 else 0, margin[3] if s == nrow - 1 else 0)
+                      for s, e in groups]
+        for a, (s, e) in zip(T['atoms'], groups):
+            a.row = uid[s]
+    else:
+        T['atoms'] = [row(r, margin[2] if r == 0 else 0, margin[3] if r == nrow - 1 else 0) for r in range(nrow)]
+        T['gneed'] = {s0: sum(a.h for a in T['atoms'][s0:e0]) + (margin[3] if e0 < nrow else 0.0)
+                      for s0, e0 in groups if e0 - s0 > 1}  # the rows of a group and the table's outer margin below (table_plan)
     return W + margin[0] + margin[1], T['atoms']
 
 

@@ -1,0 +1,205 @@
+{
+ "name": "law-forms",
+ "about": "별지 서식 of laws (law.go.kr), measured on blank forms",
+ "sample": {
+  "forms": 153,
+  "source": "law.go.kr flDownload, fetched 2026-11-16",
+  "measured": "a measuring tool outside this repository"
+ },
+ "rules": [
+  {
+   "id": "page.size",
+   "value": "A4",
+   "evidence": "152/153",
+   "status": "default",
+   "path": "page.size",
+   "note": "A4 portrait"
+  },
+  {
+   "id": "page.margin.left",
+   "value": 20,
+   "evidence": "116/153",
+   "status": "default",
+   "path": "page.margin.left",
+   "note": "mm"
+  },
+  {
+   "id": "page.margin.right",
+   "value": 20,
+   "evidence": "116/153",
+   "status": "default",
+   "path": "page.margin.right",
+   "note": "mm"
+  },
+  {
+   "id": "page.margin.top",
+   "value": 20,
+   "evidence": "114/153",
+   "status": "default",
+   "path": "page.margin.top",
+   "note": "mm"
+  },
+  {
+   "id": "page.margin.bottom",
+   "value": 10,
+   "evidence": "122/153",
+   "status": "default",
+   "path": "page.margin.bottom",
+   "note": "mm"
+  },
+  {
+   "id": "page.margin.header",
+   "value": 0,
+   "evidence": "123/153",
+   "status": "default",
+   "path": "page.margin.header",
+   "note": "mm"
+  },
+  {
+   "id": "page.margin.footer",
+   "value": 0,
+   "evidence": "122/153",
+   "status": "default",
+   "path": "page.margin.footer",
+   "note": "mm"
+  },
+  {
+   "id": "text.font-class",
+   "value": "돋움",
+   "evidence": "127/153",
+   "status": "default",
+   "path": "defaults.font",
+   "note": "sans face; the exact name 돋움 is the common one but the class is the evidence"
+  },
+  {
+   "id": "title.size",
+   "value": 16,
+   "evidence": "119/153",
+   "status": "default",
+   "path": "styles.title.size",
+   "note": "pt"
+  },
+  {
+   "id": "title.bold",
+   "value": true,
+   "evidence": "83/153",
+   "status": "default",
+   "path": "styles.title.bold"
+  },
+  {
+   "id": "title.align",
+   "value": "center",
+   "evidence": "102/153",
+   "status": "default",
+   "path": "styles.title.align"
+  },
+  {
+   "id": "formno.size",
+   "value": 8,
+   "evidence": "99/146",
+   "status": "default",
+   "path": "styles.formno.size",
+   "note": "pt, the 서식 번호 line"
+  },
+  {
+   "id": "table.label-fill",
+   "value": "#BBBBBB",
+   "evidence": "48/89",
+   "status": "default",
+   "path": "tokens.label_fill",
+   "note": "forms that shade label cells"
+  },
+  {
+   "id": "table.line-width",
+   "value": "0.12mm solid #000000",
+   "evidence": "93/147",
+   "status": "default",
+   "path": "tokens.line_thin",
+   "note": "most common line width"
+  },
+  {
+   "id": "table.line-width.thick",
+   "value": "0.7mm solid #000000",
+   "evidence": "102/147",
+   "status": "default",
+   "path": "tokens.line_thick",
+   "note": "widest line (outer frame)"
+  },
+  {
+   "id": "table.width",
+   "value": 170,
+   "evidence": "88/147",
+   "status": "default",
+   "path": "tokens.text_width",
+   "note": "mm; the first table spans the text width"
+  },
+  {
+   "id": "part.date-line",
+   "value": true,
+   "evidence": "114/153",
+   "status": "default"
+  },
+  {
+   "id": "part.signature-line",
+   "value": true,
+   "evidence": "85/153",
+   "status": "default"
+  },
+  {
+   "id": "part.to-address",
+   "value": true,
+   "evidence": "79/153",
+   "status": "default"
+  },
+  {
+   "id": "part.paper-line",
+   "value": true,
+   "evidence": "87/153",
+   "status": "default"
+  },
+  {
+   "id": "part.receipt-box",
+   "value": true,
+   "evidence": "72/153",
+   "status": "optional",
+   "note": "fewer than half of the forms"
+  },
+  {
+   "id": "part.applicant-table",
+   "value": true,
+   "evidence": "75/153",
+   "status": "optional",
+   "note": "fewer than half of the forms"
+  },
+  {
+   "id": "part.process-box",
+   "value": true,
+   "evidence": "57/153",
+   "status": "optional",
+   "note": "fewer than half of the forms"
+  },
+  {
+   "id": "part.fee-box",
+   "value": true,
+   "evidence": "56/153",
+   "status": "optional",
+   "note": "fewer than half of the forms"
+  },
+  {
+   "id": "text.size",
+   "value": 8,
+   "evidence": "58/153",
+   "status": "optional",
+   "path": "optional.small-print.defaults.size",
+   "note": "overlay small-print"
+  },
+  {
+   "id": "text.line",
+   "value": 160,
+   "evidence": "47/153",
+   "status": "optional",
+   "path": "optional.line-160.defaults.line",
+   "note": "overlay line-160"
+  }
+ ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "hwpx-docs-forms",
+  "version": "0.1.0",
+  "description": "Optional add-on of hwpx-docs: layout rules of official Korean forms (measured on real 별지 서식) as packs, so a new form gets the page, fonts, label shading, lines and parts (접수 칸, 신청인 표, 서명란, 귀하, 처리 절차) of its family. Off unless you pick a pack.",
+  "author": {
+    "name": "BlackBuddle"
+  },
+  "homepage": "https://github.com/BlackBuddle/hwpx-docs",
+  "repository": "https://github.com/BlackBuddle/hwpx-docs",
+  "license": "AGPL-3.0-or-later",
+  "keywords": [
+    "hwpx",
+    "hwp",
+    "korean",
+    "form",
+    "gongmun",
+    "hancom"
+  ]
+}

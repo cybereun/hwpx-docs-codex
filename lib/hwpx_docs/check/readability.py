@@ -226,7 +226,7 @@ def selftest():
         {'p': '가나다라마바사아자차카타파하' * 6, 'size': 10, 'line': 110, 'word_break': 'char'},
         {'p': '흐린 글자', 'color': '#BBBBBB'},
         '', '',
-        {'table': {'cols': [40, 40], 'pad': [0.2, 0.2, 0.1, 0.1], 'rows': [['가', '나'], ['1', '2'], ['3', '4']]}},
+        {'table': {'cols': [40, 40], 'pad': [0.2, 0.2, 0.1, 0.1], 'rows': [['가', '나'], ['1', '2'], ['3', '4']], 'inline': False}},
         {'p': '표 다음 문단', 'class': 'spaced'}], 'styles': {'spaced': {'before': 10}}}
     f = check(spec)
     ids = sorted({x[0] for x in f})

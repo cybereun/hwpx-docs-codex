@@ -174,7 +174,23 @@ def read(path):
     return open(path, encoding='utf-8').read()
 
 
+# picture file extension -> the media type Hangul writes in content.hpf (read from Hangul's own HWPX of real forms; "image/jpg" and
+# "image/tif" are Hangul's spelling)
+IMAGE_MEDIA = {'png': 'image/png', 'jpg': 'image/jpg', 'jpeg': 'image/jpg', 'bmp': 'image/bmp', 'gif': 'image/gif',
+               'tif': 'image/tif', 'tiff': 'image/tif'}
+
+
 def image_size(data):
+    if data[:4] in (b'II*\x00', b'MM\x00*'):                       # TIFF: the width and length tags of the first directory
+        end = '<' if data[:2] == b'II' else '>'
+        pos = struct.unpack(end + 'I', data[4:8])[0]
+        n = struct.unpack(end + 'H', data[pos:pos + 2])[0]
+        size = {}
+        for k in range(n):
+            tag, typ = struct.unpack(end + 'HH', data[pos + 2 + 12 * k:pos + 6 + 12 * k])
+            if tag in (256, 257):
+                size[tag] = struct.unpack(end + ('H' if typ == 3 else 'I'), data[pos + 10 + 12 * k:pos + 10 + 12 * k + (2 if typ == 3 else 4)])[0]
+        return size[256], size[257]
     if data[:8] == b'\x89PNG\r\n\x1a\n':
         return struct.unpack('>II', data[16:24])
     if data[:2] == b'BM':

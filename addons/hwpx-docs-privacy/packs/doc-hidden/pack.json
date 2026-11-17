@@ -1,0 +1,27 @@
+{
+  "name": "doc-hidden",
+  "about": "Group J, hidden places of an HWPX: document summary, track-change and memo authors, memos, hidden comments, field and bookmark names, picture metadata (EXIF), OLE objects, BinData file names, preview text and image, scripts",
+  "version": 1,
+  "replacement": "hwpx-docs",
+  "mask_char": "■",
+  "meta": {
+    "part": "Contents/content.hpf",
+    "keys": ["creator", "lastsaveby", "subject", "description", "keyword", "title", "company", "manager", "category", "author"],
+    "tags": ["opf:title", "dc:creator", "dc:subject", "dc:description", "dc:publisher", "dc:contributor"],
+    "dates": ["CreatedDate", "ModifiedDate", "date"],
+    "date_value": "1980-01-01T00:00:00Z"
+  },
+  "attrs": [
+    {"part": "Contents/header.xml", "re": "(<hh:trackChangeAuthor\\b[^>]*?\\bname=\")([^\"]*)(\")"},
+    {"part": "Contents/header.xml", "re": "(<hh:trackChange\\b[^>]*?\\bdate=\")([^\"]*)(\")", "value": "1980-01-01T00:00:00Z"},
+    {"part": "Contents/section*.xml", "re": "(<hp:stringParam name=\"Author\"[^>]*>)([^<]*)(</hp:stringParam>)"},
+    {"part": "Contents/section*.xml", "re": "(<hp:stringParam name=\"Date\"[^>]*>)([^<]*)(</hp:stringParam>)", "value": "1980-01-01T00:00:00Z"}
+  ],
+  "wipe_text_in": ["hp:hiddenComment", "hp:memo", "hp:memogroup", "hp:memoShape"],
+  "name_attrs": [["hp:fieldBegin", "name"], ["hp:bookmark", "name"], ["hp:fieldBegin", "command"]],
+  "bindata": {"dir": "BinData/", "images": [".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tif", ".tiff", ".emf", ".wmf"], "ole": [".ole", ".OLE"], "rename": "BinData/{kind}{n}{ext}"},
+  "preview": {"text": "Preview/PrvText.txt", "image": "Preview/PrvImage.png"},
+  "drop": ["Scripts/", "Contents/Scripts/"],
+  "paths": ["(?i)[A-Za-z]:\\\\+users\\\\+[^\\\\/:*?\"<>|\\r\\n\\x00]+(?:\\\\+[^\\\\/:*?\"<>|\\r\\n\\x00]+)*"],
+  "tests": {"note": "see tools/privacy/hidden_test.py: a synthetic HWPX with every place holds a canary; none may be left after redact"}
+}

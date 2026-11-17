@@ -1,15 +1,23 @@
 ---
 name: hwpx-core
-description: Make, read and check HWPX (OWPML, KS X 6101) documents that 한컴오피스 한글 opens — JSON spec to HWPX builder, HWPX to spec reader, build-check loop, page renders. Use for 한글 문서/hwpx 만들기, hwp 파일, 한글 양식, reading or editing an HWPX as data. Other hwpx-* skills add text, tables, objects, page, forms from images, 공문.
+description: Make, read and check HWPX (OWPML, KS X 6101) and HWP (HWP 5.0) documents that 한컴오피스 한글 opens — JSON spec to HWPX or HWP builder, HWPX/HWP to spec reader, build-check loop, page renders. Use for 한글 문서/hwpx/hwp 만들기, hwp 파일, 한글 양식, reading or editing an HWPX or .hwp as data. Other hwpx-* skills add text, tables, objects, page, forms from images, 공문.
 ---
 
-# HWPX core
+# HWPX and HWP core
 
 `hd` below = `python "${skillRoot}/lib/hd.py"` (Python 3.10+, standard library only).
 
 Every document is made from the same primitives (page, paragraphs, runs, tables, shapes, pictures), written by one
 builder from a JSON spec. There are no per-form templates in code. The XML forms come from files saved by Hangul
 2024 and are checked by round trips. Spec format: `${skillRoot}/docs/spec.md`.
+
+## HWPX and HWP
+
+Both formats take the same commands. Name the output `.hwp` instead of `.hwpx` (`hd build spec.json out.hwp`, `hd md`, `hd html`) and the
+document is written as HWP 5.0 with no Hangul; a received `.hwp` goes to `slots`, `edit`, `guard`, `text`, `read`, `preview`, `pagefit`,
+`readability` the same way as a `.hwpx`. The table of every command and how it reaches a `.hwp` is `${skillRoot}/docs/hwp-parity.md`.
+A `.hwp` write that meets an object or value it does not know (none of the tested files shows it) stops with `UNSUPPORTED <element>` and writes nothing: then make the HWPX and
+`hd convert` it with Hangul. Never name a ZIP `.hwp`.
 
 ## Which skill
 
@@ -31,7 +39,7 @@ builder from a JSON spec. There are no per-form templates in code. The XML forms
 2. `hd build spec.json out.hwpx` — it also prints the readability findings (`RDnn ...`, `READABILITY ...`).
 3. A new document: apply the safe fixes (`hd readability spec.json --fix spec.json`, then build again) and tell
    the user the advice items. A reproduction: report the findings, change nothing (skill hwpx-text).
-4. Windows + Hangul only: `hd render hwpx out.hwpx pages/` -> `OPEN OK <file> pages <n>` and `pages/out_p<N>.png`.
+4. Windows + Hangul only, and only when you ask for it: `hd render hwpx out.hwpx pages/ --backend hangul` (Hangul opens a safe copy: no macros, no links to outside) -> `OPEN OK <file> pages <n>` and `pages/out_p<N>.png`.
    Before it, tell the user in one line: how many files, and that Hangul may ask once for file access ("모두 허용").
 5. Compare with the target (`hd render side`, `hd img overlay`), fix, repeat. Give the user the HWPX and a PNG.
 

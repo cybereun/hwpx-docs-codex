@@ -151,7 +151,7 @@ def order_and_head():
     reports `order`, the readable fix gives the table `hold`. PF27: a table over pages repeats its bold first row."""
     fill = [{'p': '채움 %d' % i} for i in range(30)]
     tbl = {'table': {'cols': [60, 60], 'rows': [['열 1', '열 2']] + [['가 %d' % i, '나'] for i in range(12)],
-                     'border': '0.12mm solid #000000', 'page_break': 'none'}}
+                     'border': '0.12mm solid #000000', 'page_break': 'none', 'inline': False}}      # a flow table: an inline one is not cut or held (TB11)
     spec = {'body': fill + [{'p': '□ 앞 제목', 'keep_next': True}, tbl, {'p': '□ 뒤 제목', 'keep_next': True}, {'p': '뒤 문단'}]}
     assert any(f.kind == 'order' for f in check.check(spec, profile='readable')[0]), 'order not found'
     work = copy.deepcopy(spec)

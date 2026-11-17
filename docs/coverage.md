@@ -7,6 +7,8 @@ trip with Hangul rendering, ink difference 0.00 (`RT:` sample, `RTP:` pair B fil
 filled or it has a written reason. Status 2026-11-14: corpus samples RT 24/24 = 0.00, pair B files RTP 106/107 = 0.00
 (exception C7.09).
 
+The rows below are about HWPX. The same commands take `.hwp` files (HWP 5.0): the table of both formats is `hwp-parity.md`, the `.hwp` checks are `lib/hwpx_docs/hwp5/coverage.md`.
+
 ## C1 글자 모양
 
 | id | item | COM | pair | rule | builder | verified | note |
@@ -88,6 +90,7 @@ filled or it has a written reason. Status 2026-11-14: corpus samples RT 24/24 = 
 | C4.15 | endnote | yes | P:endnote_add | S19 | `{"endnote": ...}` | RTP | |
 | C4.16 | note format/separator | yes (`HSecDef.FootnoteShape.*`) | P:pg_note | PX08 | `note_shape` + reader (`pagex/`) | RT 16 files | drawn (preview C13.12, rules P15) |
 | C4.17 | hide header/footer/page number on a page | yes (`HPageHiding.Fields`) | P:pg_hide | PX04, PX09 | `hide_page` block, `hide_first`; reader raw / `hide_first` (`pagex/`) | RT 4 files | drawn |
+| C4.18 | empty lines at the top of a page not shown (빈 줄 감춤) | yes (secd bit 19) | - | HW78 | `page.hide_empty_line` (spec, `hd hwp tospec`, `core/read.py`) | M: form 170142493 builds to 3 pages without it, 2 with it (Hangul 2024) | |
 
 ## C5 표
 
@@ -217,7 +220,7 @@ bottom of each page within 0.3 mm of Hangul's).
 
 | id | item | COM | pair | rule | builder | verified | note |
 |---|---|---|---|---|---|---|---|
-| C14.01 | fill of each page, free space in mm | n/a | n/a | PF01 | `hd pagefit check` | M: model vs Hangul 0.2 mm (6 + 4 pages); columns, footnotes, objects: the preview's flow (page counts 5 -> 4, 6 -> 4, 6 -> 4 in Hangul) | the preview applies keep_next, keep_lines, widow and page_break_before since its rule P17 (pagefit PF01, PF25) |
+| C14.01 | fill of each page, free space in mm | n/a | n/a | PF01 | `hd pagefit check` | M: model vs Hangul 0.2 mm (6 + 4 pages); columns, footnotes, objects: the preview's flow (page counts 5 -> 4, 6 -> 4, 6 -> 4 in Hangul) | the preview applies keep_next, keep_lines, widow and page_break_before since its rule P17 (pagefit PF01, PF25); with `page_break` cell it cuts a group of merged rows like any rows (rules P18; measured in Hangul: `merged_rows` 128 of 128), pagefit's `table_group` rule (PF02) still keeps such a group whole: open |
 | C14.02 | heading alone at the bottom of a page | n/a | n/a | PF02 | `check` heading | M: Hangul keeps it with `keep_next` | |
 | C14.03 | one line of a paragraph at the bottom or the top | n/a | n/a | PF03 | `check` orphan_end / orphan_start | M: `widow` (breakSetting widowOrphan) honoured by Hangul | |
 | C14.04 | table cut after its header row | n/a | n/a | PF04 | `check` table; `fix` moves the table (`page_break_before`) | M: Hangul page 2 before / table on page 3 after | |

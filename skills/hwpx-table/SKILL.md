@@ -27,9 +27,11 @@ rules T01-T15 and W04-W06 in `${skillRoot}/docs/rules.md`.
 - Repeated looks: spec `styles` + cell `"class": "head"`.
 - Space before or after a block table: use the table `margin` (top, bottom) or a `gap` block; Hangul ignores the
   anchor paragraph's `before` (rule W05).
-- Long tables: `header_rows` + `repeat_header` (readability RD10).
+- Long tables: `header_rows` + `repeat_header` (readability RD10). A table is treated as a character (`inline` true) unless it has
+  `pos`, `wrap`, `side`, `hold`, `header_rows`, `page_break: "cell"` or is about as high as a page: those flow and Hangul cuts them
+  between pages. Write `"inline": false` to make any table flow, `"inline": true` to keep a tall one as a character (rule TB11).
 
-## More table features (rules TB01-TB09 in `${skillRoot}/lib/hwpx_docs/table/rules.md`)
+## More table features (rules TB01-TB11 in `${skillRoot}/lib/hwpx_docs/table/rules.md`)
 
 - Cell `fill`: a colour, a gradient `{"type": "gradient", "kind": "linear", "angle": 90, "colors": [a, b]}` (give 2 colours; Hangul
   draws 3 black) or a picture `{"type": "image", "src": "a.png", "mode": "tile"}`.

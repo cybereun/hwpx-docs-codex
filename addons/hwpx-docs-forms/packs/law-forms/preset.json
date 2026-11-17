@@ -1,0 +1,22 @@
+{
+ "page": {
+  "size": "A4",
+  "margin": {"left": 20, "right": 20, "top": 20, "bottom": 10, "header": 0, "footer": 0}
+ },
+ "defaults": {"font": "돋움"},
+ "styles": {
+  "title": {"size": 16, "bold": true, "align": "center"},
+  "formno": {"size": 8},
+  "label": {"fill": "#BBBBBB"}
+ },
+ "tokens": {
+  "label_fill": "#BBBBBB",
+  "line_thin": "0.12mm solid #000000",
+  "line_thick": "0.7mm solid #000000",
+  "text_width": 170
+ },
+ "optional": {
+  "small-print": {"defaults": {"size": 8}},
+  "line-160": {"defaults": {"line": 160}}
+ }
+}

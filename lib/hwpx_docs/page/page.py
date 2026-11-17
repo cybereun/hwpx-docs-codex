@@ -28,6 +28,8 @@ class PageMixin:
                        f'width="{w}" height="{h}" gutterType="LEFT_ONLY">', secpr)
         secpr = re.sub(r'<hp:margin [^>]*/>', f'<hp:margin header="{mg["header"]}" footer="{mg["footer"]}" gutter="{mg["gutter"]}" '
                        f'left="{mg["left"]}" right="{mg["right"]}" top="{mg["top"]}" bottom="{mg["bottom"]}"/>', secpr)
+        if pg.get('hide_empty_line'):                     # 빈 줄 감춤: empty lines at the top of a page are not shown (secd bit 19)
+            secpr = secpr.replace('hideFirstEmptyLine="0"', 'hideFirstEmptyLine="1"', 1)
         if 'start_page' in pg:
             secpr = re.sub(r'(<hp:startNum [^>]*page=")\d+', rf'\g<1>{int(pg["start_page"])}', secpr)
         col = sec.get('columns') or {}

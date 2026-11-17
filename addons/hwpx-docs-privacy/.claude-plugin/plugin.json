@@ -1,0 +1,10 @@
+{
+  "name": "hwpx-docs-privacy",
+  "version": "0.1.0",
+  "description": "Optional add-on of hwpx-docs: the model sees pseudonyms for what its rules find. Personal data in Hangul documents (resident numbers, phones, addresses, accounts, names, hidden places such as author, title and memos; dictionary terms in strict mode) that its rules find is replaced by tags such as ⟪주민번호1｜1980년대·남⟫ in what `hd` shows; tags are turned back into real values when a document is written. Local vault, hooks, audit log. Off unless installed.",
+  "author": {"name": "BlackBuddle"},
+  "homepage": "https://github.com/BlackBuddle/hwpx-docs",
+  "repository": "https://github.com/BlackBuddle/hwpx-docs",
+  "license": "AGPL-3.0-or-later",
+  "keywords": ["hwpx", "hwp", "korean", "privacy", "pii", "pipa", "개인정보"]
+}

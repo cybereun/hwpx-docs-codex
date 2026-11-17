@@ -1,0 +1,53 @@
+{
+ "date-line": {
+  "about": "년 월 일 line above the signature",
+  "params": {"text": "년     월     일", "before": 12},
+  "body": [{"p": "${text}", "align": "center", "before": "${before}"}]
+ },
+ "signature-line": {
+  "about": "신청인 (서명 또는 인), right aligned",
+  "params": {"who": "신청인", "gap": "    "},
+  "body": [{"p": "${who}${gap}(서명 또는 인)", "align": "right"}]
+ },
+ "to-address": {
+  "about": "recipient line: 00장 귀하",
+  "params": {"agency": null},
+  "body": [{"p": "${agency} 귀하", "align": "left"}]
+ },
+ "paper-line": {
+  "about": "paper size line at the foot of the form",
+  "params": {"paper": "백상지(80g/㎡) 또는 중질지(80g/㎡)"},
+  "body": [{"p": "210mm×297mm[${paper}]", "align": "right", "size": 8}]
+ },
+ "receipt-box": {
+  "about": "접수 칸: 접수번호, 접수일, 처리기간 (the shaded cells are not written by the applicant)",
+  "params": {"days": ""},
+  "body": [{"table": {"cols": [24, 46, 18, 44, 18, 20], "border": "${line_thin}", "outline": "${line_thick}",
+                      "rows": [[{"p": "접수번호", "class": "label"}, "", {"p": "접수일", "class": "label"}, "",
+                                {"p": "처리기간", "class": "label"}, "${days}"]]}}]
+ },
+ "applicant-table": {
+  "about": "신청인 table: 성명, 생년월일, 주소, 전화번호, 전자우편",
+  "params": {"name": "", "birth": "", "address": "", "tel": "", "email": ""},
+  "body": [{"table": {"cols": [22, 22, 48, 24, 54], "border": "${line_thin}", "outline": "${line_thick}",
+                      "rows": [[{"p": "신청인", "rs": 3, "class": "label"}, {"p": "성명", "class": "label"}, "${name}",
+                                {"p": "생년월일", "class": "label"}, "${birth}"],
+                               [{"p": "주소", "class": "label"}, {"p": "${address}", "cs": 3}],
+                               [{"p": "전화번호", "class": "label"}, "${tel}", {"p": "전자우편", "class": "label"}, "${email}"]]}}]
+ },
+ "process-box": {
+  "about": "처리절차 box: five steps with arrows",
+  "params": {"s1": "신청서 작성", "s2": "접수", "s3": "검토", "s4": "결재", "s5": "통보"},
+  "body": [{"table": {"cols": [26, 7, 28, 7, 28, 7, 28, 7, 32], "border": "${line_thin}", "outline": "${line_thick}",
+                      "rows": [[{"p": "처리절차", "cs": 9, "class": "label", "align": "center"}],
+                               [{"p": "${s1}", "align": "center"}, {"p": "→", "align": "center"}, {"p": "${s2}", "align": "center"},
+                                {"p": "→", "align": "center"}, {"p": "${s3}", "align": "center"}, {"p": "→", "align": "center"},
+                                {"p": "${s4}", "align": "center"}, {"p": "→", "align": "center"}, {"p": "${s5}", "align": "center"}]]}}]
+ },
+ "fee-box": {
+  "about": "수수료 box",
+  "params": {"fee": "없음"},
+  "body": [{"table": {"cols": [24, 146], "border": "${line_thin}", "outline": "${line_thick}",
+                      "rows": [[{"p": "수수료", "class": "label"}, "${fee}"]]}}]
+ }
+}

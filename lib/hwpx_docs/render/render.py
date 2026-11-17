@@ -1,10 +1,11 @@
 """Render pages to PNG, and check that Hangul opens a file with no prompt.
 
-  python render.py hwpx <file.hwpx> [<out_dir>] [--dpi 96] [--backend auto|hangul|preview]
+  python render.py hwpx <file.hwpx> [<out_dir>] [--dpi 96] [--backend preview|hangul]
                                                             page images -> <out_dir>/<stem>_p<N>.png
                                                             prints "OPEN OK <file> pages <n>" or "OPEN FAIL <file>" (Hangul), or
                                                             "PREVIEW OK <file> pages <n>" (own renderer, no Hangul: package preview)
-                                                            auto (default) = Hangul when it is installed, else preview
+                                                            preview (default; `auto` means the same) = own renderer, Hangul never
+                                                            starts by itself; `--backend hangul` opens a safe copy (no macros, no links)
   python render.py html <file.html> [<out_dir>] [--dpi 96]   Edge print-to-PDF, then Windows.Data.Pdf -> PNG
   python render.py topng <image> <out.png>                    any image (PNG/JPG/BMP/GIF/TIFF) -> PNG (WinRT)
   python render.py side <out.png> <left.png> <right.png>      side-by-side picture (scripts/img.py)
@@ -164,7 +165,7 @@ if __name__ == '__main__':
         i = args.index('--dpi')
         dpi = int(args[i + 1])
         del args[i:i + 2]
-    backend = 'auto'
+    backend = 'preview'
     if '--backend' in args:
         i = args.index('--backend')
         backend = args[i + 1]
@@ -172,9 +173,7 @@ if __name__ == '__main__':
     cmd = args[0]
     if cmd == 'hwpx':
         out = args[2] if len(args) > 2 else os.path.dirname(os.path.abspath(args[1]))
-        if backend == 'auto':
-            from ..convert.convert import hangul_available
-            backend = 'hangul' if hangul_available() else 'preview'
+        backend = 'preview' if backend == 'auto' else backend
         if backend == 'hangul':
             hwpx_pages([args[1]], out, dpi)
         else:

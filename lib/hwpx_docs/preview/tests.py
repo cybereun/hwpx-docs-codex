@@ -389,6 +389,10 @@ def keep_test():
     assert len(hl[0]) == 4 and hl[1][0] == 36.0, ('part 1 closed, the rest 1 mm under the body top', hl)
     pg, hl = kc(34, nine, header_rows=1)
     assert pg[1][0].startswith('머리') and hl[1][0] == 36.0, ('the header row again before the rest (kc_hdr)', pg[1][:2])
+    pg, hl = kc(34, nine, header_rows=1, margin=[1.0, 1.0, 4.5, 1.0])      # a top margin made of the offset: only margin_cont (1 mm) on page 2
+    assert hl[1][0] == 36.0, ('the gap above a table that goes on is its margin_cont, at most 1 mm without it', hl[1][:2])
+    pg, hl = kc(34, nine, header_rows=1, margin=[1.0, 1.0, 4.5, 1.0], margin_cont=2.0)
+    assert hl[1][0] == 37.0, ('margin_cont 2 mm', hl[1][:2])
     pg, hl = kc(34, nine, page_break='table')
     assert not any(r.startswith('칸') for r in pg[0]) and len(hl[0]) == 3 and hl[1][0] == 36.0, ('TABLE: whole rows', hl)
     for widow, k in ((True, 2), (False, 1)):
@@ -435,6 +439,19 @@ def keep_test():
         render_section(ctx, {'page': page, 'body': body + [{'p': '대상 ' + unit, 'widow': widow}]}, 1)
         x = float(re.search(r'<text x="([\d.]+)[^"]*" y="[\d.]+"[^>]*>대상', '\n'.join(ctx.pages[0].svg)).group(1))
         assert (x < 100) == (first == 'col1'), (widow, x)
+    # merged rows with page_break cell: Hangul does not keep a group together, it cuts it between rows or inside one (merged
+    # rows, 64 samples; rules P18): a page may start inside a group, the cell that crosses goes on without its text again
+    cell_t = table(0, rows=[['열0', '열1', '열2']] + [[{'p': '병합%d' % i, 'rs': 4}, '나%d' % i, '다'] if i % 4 == 0 else ['나%d' % i, '다']
+                                                   for i in range(72)])
+    pg = texts([{'p': '앞 %d' % i} for i in range(5)] + [cell_t])
+    firsts = [int(re.search(r'나(\d+)', next(t for t in p if '나' in t)).group(1)) for p in pg[1:]]
+    assert len(pg) >= 2 and any(n % 4 for n in firsts), ('page_break cell: a page starts inside a merged group', firsts)
+    assert all(sum(t.count('병합') for t in p) <= 1 + len(p) // 4 for p in pg) and \
+        sum(t.count('병합') for p in pg for t in p) == 18, 'the merged text is drawn once, not again on the next page'
+    # a table that flows with the text (hwp5 pos.flow): the text of its paragraph first, the table under it, cut at the page end
+    flow_t = table(60, pos={'x': 0.0, 'y': 3.0, 'rel': 'para', 'flow': True, 'overlap': False})
+    pg = texts([{'table': flow_t['table'], 'same_para': True}, {'p': '표 제목'}])
+    assert pg[0][0] == '표제목' and pg[0][1].startswith('열0') and len(pg) >= 2, ('text before the flowing table', pg[0][:3])
     print('PREVIEW KEEP PASS')
 
 

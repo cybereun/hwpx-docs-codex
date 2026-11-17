@@ -41,7 +41,33 @@ def _table(**kw):
     return {'body': [{'table': t}]}
 
 
+def inline_default():
+    """TB11: a table is a character unless it has to flow; an explicit `inline` is kept; a read table keeps its own value."""
+    def pos(spec):
+        _, parts = _build(spec, 'inl')
+        return parts['Contents/section0.xml']
+    short = {'cols': [60, 60], 'rows': [['가', '나']] * 4}
+    assert 'treatAsChar="1"' in pos({'body': [{'table': dict(short)}]})                        # the default
+    assert 'treatAsChar="0"' in pos({'body': [{'table': dict(short, inline=False)}]})          # written as flow
+    assert 'treatAsChar="0"' in pos({'body': [{'table': dict(short, pos={'x': 10, 'y': 10, 'rel': 'paper'})}]})
+    for flow in ({'header_rows': 1}, {'page_break': 'cell'}, {'wrap': 'square'}):
+        assert 'treatAsChar="0"' in pos({'body': [{'table': dict(short, **flow)}]}), flow
+    tall = {'cols': [60, 60], 'rows': [['가', '나']] * 60, 'heights': [5] * 60}                   # 300 mm: higher than the page
+    assert 'treatAsChar="0"' in pos({'body': [{'table': dict(tall)}]})
+    assert 'treatAsChar="1"' in pos({'body': [{'table': dict(tall, inline=True)}]})            # the spec decides
+    wrapped = {'cols': [20, 20], 'rows': [['가나다라마바사아자차카타파하 ' * 40, 'b']]}         # high by its wrapped text
+    assert 'treatAsChar="0"' in pos({'body': [{'table': wrapped}]})
+    assert 'treatAsChar="1"' in pos({'body': [{'table': dict(short), 'same_para': False}]})
+    assert 'treatAsChar="0"' in pos({'body': [{'table': dict(short), 'same_para': True}]})
+    spec = {'body': [{'table': dict(short)}, {'table': dict(short, inline=False)}]}
+    path, _ = _build(spec, 'inl2')
+    back = read.read(path, os.path.join(os.path.dirname(path), 'x.json'))
+    assert [b['table']['inline'] for b in back['body']] == [True, False], back['body']       # a table of its own paragraph is a block
+    _again(path)
+
+
 def run():
+    inline_default()
     # base grid, merges, borders (the old core test)
     spec = {'body': [{'table': {'cols': [30, 40, 50], 'heights': [10, 10, 10], 'border': '0.12mm solid',
                                 'rows': [[{'p': '머리', 'cs': 2, 'fill': '#D9D9D9', 'bold': True}, {'p': '세로', 'rs': 2}],

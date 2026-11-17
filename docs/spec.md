@@ -13,7 +13,7 @@ double (= double_slim), slim_thick, thick_slim, slim_thick_slim, none. Widths sn
 {
   "title": "문서 제목",
   "defaults": {"font": "함초롬바탕", "size": 10, "align": "justify", "line": 160},
-  "page": {"size": "A4", "landscape": false,
+  "page": {"size": "A4", "landscape": false, "start_page": 1, "hide_empty_line": false,
            "margin": {"left": 20, "right": 20, "top": 20, "bottom": 15, "header": 15, "footer": 15, "gutter": 0}},
   "columns": {"count": 2, "gap": 8, "line": "0.12mm solid", "type": "newspaper|balanced|parallel"},
   "page_border": {"border": "0.4mm solid", "fill": "#FFFFFF", "offset": 5, "text_border": "paper|content"},
@@ -41,7 +41,7 @@ A5, B4, B5, LETTER, LEGAL or `[width, height]` in mm. The body starts at top + h
 | `{"p": "text", ...props}` | paragraph; `\n` makes more paragraphs with the same props; `\t` is a tab |
 | `{"p": [runs], ...props}` | paragraph made of runs (below) |
 | `{"table": {...}, ...props}` | table in its own paragraph (props of that paragraph: align, before, after, char style of the cells) |
-| `{"pic": {"src": "a.png", "w": 40, "h": 30, "inline": true}}` | picture (path relative to the spec file) |
+| `{"pic": {"src": "a.png", "w": 40, "h": 30, "inline": true}}` | picture (path relative to the spec file; png, jpg, bmp, gif, tif / tiff) |
 | `{"shapes": [shape, ...], "p": "optional text"}` | floating drawing objects anchored to this paragraph |
 | `{"gap": 6}` | empty paragraph exactly 6 pt high |
 | `{"chart": {...}}` | bar or line chart drawn with drawing objects (below) |
@@ -60,7 +60,7 @@ A5, B4, B5, LETTER, LEGAL or `[width, height]` in mm. The body starts at top + h
 | `{"field": "name", "t": "guide", "memo": "help"}` | 누름틀 |
 | `{"bookmark": "name"}` | bookmark |
 | `{"equation": "a over b"}` | equation (Hangul equation script) |
-| `{"table": {...}}` / `{"pic": {...}}` | inline table / picture (moves like a character) |
+| `{"table": {...}}` / `{"pic": {...}}` | table / picture, treated as a character by default (moves like a character; a table that needs to flow: `inline` below) |
 | `{"tab": true}` | tab |
 | `{"xml": "<hp:...>"}` | raw OWPML run content, written as given |
 
@@ -100,7 +100,7 @@ or `{"list": i, "level": n}` = Hangul automatic number from `numberings`); `outl
   "cell": {"valign": "center", "align": "left", "size": 10},   // defaults for every cell
   "pad": [1.8, 1.8, 0.5, 0.5],               // cell margins l r t b, mm (Hangul default)
   "margin": [1, 1, 1, 1],                    // outer margin, mm (Hangul default 1 mm: the table starts 1 mm right of the text area)
-  "inline": false, "align": "left|center|right", "pos": {"x": 20, "y": 50, "rel": "paper"},
+  "inline": true, "align": "left|center|right", "pos": {"x": 20, "y": 50, "rel": "paper"},     // inline: see below
   "page_break": "cell|table|none", "repeat_header": true, "header_rows": 1,
   "rows": [
     [{"p": "회의명", "fill": "#E7E6E6", "bold": true, "align": "center"}, {"p": "값", "cs": 3}],
@@ -109,13 +109,20 @@ or `{"list": i, "level": n}` = Hangul automatic number from `numberings`); `outl
   ]
 }}
 ```
+A table is treated as a character (`inline` true, Hangul 글자처럼 취급) unless the spec says `"inline": false`, as pictures and
+shapes are. A table without `inline` is a flow table (`inline` false) when it has `pos`, `wrap`, `side` or `hold`, `header_rows` or
+`page_break: "cell"` (repeated header rows and rows cut between pages), or when it is about as high as a page (the height is
+estimated from the wrapped text, `heights` and the cell margins; 95 % of the page body): Hangul does not cut a table that is
+treated as a character. The value is written into the spec before the build (`table/inline.py`, rule TB11). A table read from
+an .hwp / HWPX keeps its own value. A table that is a character is placed by its paragraph: the table `align` sets the alignment of that paragraph.
+
 Rows list cells like HTML: a cell takes the next free grid position; `cs`/`rs` span columns/rows and the covered
 positions are skipped. A cell is a string or a dict with `p` (text, `\n` = more paragraphs) or `blocks`, `cs`, `rs`,
 `fill`, `border` (line spec or `{"top", "bottom", "left", "right"}`; it sets the grid lines around the cell, a later
 cell wins on a shared line), `valign` (top, center, bottom), `pad`, `diag` (slash, back, both) + `diag_line`, and any
 char/para props. Cells inherit the char style of the table block, not its paragraph spacing.
 
-More table keys (package `table`, rules TB01-TB09 in `lib/hwpx_docs/table/rules.md`; drafts until Hangul shows them):
+More table keys (package `table`, rules TB01-TB11 in `lib/hwpx_docs/table/rules.md`; drafts until Hangul shows them):
 - cell `fill`: a colour, `{"type": "gradient", "kind": "linear|radial|conical|square", "angle": 90, "center": [x%, y%],
   "step": 50, "step_center": 50, "colors": ["#FFFFFF", "#3366CC"]}` or `{"type": "image", "src": "a.png", "mode": "tile|total|center|zoom|..."}`.
   Hangul draws a gradient with 3 colours black: give 2.

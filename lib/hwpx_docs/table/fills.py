@@ -11,13 +11,13 @@ The builder gives `brush(doc, fill)` a fill and gets what `Header.border_fill` t
 """
 import os
 
-from ..core.units import color
+from ..core.units import IMAGE_MEDIA, color
 
 NS_HC = '{http://www.hancom.co.kr/hwpml/2011/core}'
 GRADS = {'linear': 'LINEAR', 'radial': 'RADIAL', 'conical': 'CONICAL', 'square': 'SQUARE'}
 MODES = ('TILE', 'TILE_HORZ_TOP', 'TILE_HORZ_BOTTOM', 'TILE_VERT_LEFT', 'TILE_VERT_RIGHT', 'TOTAL', 'CENTER', 'CENTER_TOP',
          'CENTER_BOTTOM', 'LEFT_CENTER', 'LEFT_TOP', 'LEFT_BOTTOM', 'RIGHT_CENTER', 'RIGHT_TOP', 'RIGHT_BOTTOM', 'ZOOM')
-MEDIA = {'png': 'image/png', 'jpg': 'image/jpg', 'jpeg': 'image/jpg', 'bmp': 'image/bmp', 'gif': 'image/gif'}
+MEDIA = IMAGE_MEDIA
 GRAD_DEFAULT = dict(angle=90, center=[0, 0], step=50, step_center=50)
 
 

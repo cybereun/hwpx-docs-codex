@@ -1,7 +1,7 @@
 """Drawing objects, text boxes and pictures."""
 import os
 from ..core import registry
-from ..core.units import HU_PER, color, hu, image_size, line, quad
+from ..core.units import HU_PER, IMAGE_MEDIA, color, hu, image_size, line, quad
 
 
 def _post(kind):
@@ -88,7 +88,7 @@ class ObjectsMixin:
         data = open(path, 'rb').read()
         ext = os.path.splitext(path)[1].lower().lstrip('.')
         ext = 'jpg' if ext == 'jpeg' else ext
-        media = {'png': 'image/png', 'jpg': 'image/jpg', 'bmp': 'image/bmp', 'gif': 'image/gif'}[ext]
+        media = IMAGE_MEDIA[ext]
         pw, ph = image_size(data)
         w = hu(p['w']) if 'w' in p else pw * 75
         h = hu(p['h']) if 'h' in p else (round(w * ph / pw) if 'w' in p else ph * 75)

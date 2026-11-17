@@ -495,6 +495,8 @@ class Reader:
         texts = [(c, s) for c, s in runs if not (s == '' and len(runs) > 1)]
         if extra and not any(s for _, s in texts):
             return out
+        if not extra and not shapes and len(texts) == 1 and isinstance(texts[0][1], dict) and set(texts[0][1]) == {'table'}:
+            return [dict(block, table=texts[0][1]['table'])]      # a paragraph that holds only a table that is a character: a table block (as the builder writes it)
         for b in out:                   # a table / picture in the same hp:p as the text block that follows (rules S26)
             if 'table' in b or 'pic' in b or 'object' in b or 'ole' in b:
                 b['same_para'] = True
@@ -531,7 +533,7 @@ class Reader:
                 cells.append(dict(r=int(a.get('rowAddr')), c=int(a.get('colAddr')), rs=int(s.get('rowSpan')),
                                   cs=int(s.get('colSpan')), w=int(z.get('width')), h=int(z.get('height')), el=tc))
         cols = solve([(x['c'], x['cs'], x['w']) for x in cells], ncol)
-        heights = solve([(x['r'], x['rs'], x['h']) for x in cells], nrow)
+        heights = solve([(x['r'], x['rs'], x['h']) for x in cells], nrow, largest=True)
         inm = tbl.find('hp:inMargin', NS)
         pad = [int(inm.get(k)) for k in ('left', 'right', 'top', 'bottom')]
         # edges: the stronger of the two cell sides on each grid line (what Hangul shows)
@@ -604,6 +606,7 @@ class Reader:
             if any(omv):
                 t['margin'] = omv
         else:
+            t['inline'] = False          # a table that flows: written out, because a table without `inline` is a character (table/inline.py)
             if omv != [1.0, 1.0, 1.0, 1.0]:
                 t['margin'] = omv
             if pos.get('horzAlign') != 'LEFT':
@@ -689,6 +692,9 @@ class Reader:
         page['margin'] = {k: mm(m.get(k)) for k in ('left', 'right', 'top', 'bottom', 'header', 'footer')}
         if m.get('gutter', '0') != '0':
             page['margin']['gutter'] = mm(m.get('gutter'))
+        vis = sp.find('hp:visibility', NS)
+        if vis is not None and vis.get('hideFirstEmptyLine') == '1':
+            page['hide_empty_line'] = True
         sn = sp.find('hp:startNum', NS)
         if sn is not None and sn.get('page') not in ('0', None):
             page['start_page'] = int(sn.get('page'))
@@ -727,17 +733,26 @@ class Reader:
         return sec
 
 
-def solve(spans, n):
-    """Sizes of n grid tracks from (start, span, size) items."""
+def solve(spans, n, largest=False):
+    """Sizes of n grid tracks from (start, span, size) items. `largest`: a track that several single cells size takes the biggest
+    (a row height: Hangul writes it in one cell and 0 in the others); otherwise the last one wins (a column width)."""
     size = [None] * n
     for s, k, v in spans:
         if k == 1:
-            size[s] = v
+            size[s] = max(size[s] or 0, v) if largest else v
     for _ in range(n):
         for s, k, v in spans:
             unknown = [i for i in range(s, s + k) if size[i] is None]
             if len(unknown) == 1:
-                size[unknown[0]] = v - sum(size[i] for i in range(s, s + k) if size[i] is not None)
+                size[unknown[0]] = max(v - sum(size[i] for i in range(s, s + k) if size[i] is not None), 0)     # no width below 0
+    # ponytail: exact for one unknown track; with several the width is shared equally, an estimate (a table whose widths are all
+    # fixed by cells of one track never gets here)
+    for s, k, v in sorted(spans, key=lambda x: x[1]):            # tracks that only a cell over several of them sizes: share it
+        unknown = [i for i in range(s, s + k) if size[i] is None]
+        if unknown:
+            rest = v - sum(size[i] for i in range(s, s + k) if size[i] is not None)
+            for i in unknown:
+                size[i] = max(rest, 0) / len(unknown)
     return [v if v is not None else 0 for v in size]
 
 

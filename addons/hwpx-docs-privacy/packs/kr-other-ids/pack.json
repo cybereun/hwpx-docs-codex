@@ -1,0 +1,361 @@
+{
+ "name": "kr-other-ids",
+ "about": "Group E, other identifiers that point to one person: student, employee, military, exam, patient / chart, health insurance, court case, petition, member, licence, ID card numbers",
+ "version": 1,
+ "kinds": [
+  {
+   "id": "sid",
+   "label": "학번",
+   "group": "E",
+   "level": "strict",
+   "numeric": false,
+   "disclose": "none",
+   "patterns": [],
+   "labels": [
+    "학번",
+    "학생번호",
+    "학생 번호",
+    "Student ID"
+   ],
+   "value": "[A-Za-z]?\\d{6,10}",
+   "tests": {
+    "pos": [
+     [
+      "학번 2021123456",
+      "2021123456"
+     ]
+    ],
+    "neg": [
+     "학번 기재"
+    ]
+   }
+  },
+  {
+   "id": "eid",
+   "label": "사번",
+   "group": "E",
+   "level": "strict",
+   "numeric": false,
+   "disclose": "none",
+   "patterns": [],
+   "labels": [
+    "사번",
+    "사원번호",
+    "직원번호",
+    "교직원번호",
+    "공무원번호",
+    "Employee ID",
+    "Emp No\\.?"
+   ],
+   "value": "[A-Za-z]{0,3}\\d{4,10}",
+   "tests": {
+    "pos": [
+     [
+      "사원번호 A1234567",
+      "A1234567"
+     ],
+     [
+      "사번: 20180034",
+      "20180034"
+     ]
+    ],
+    "neg": [
+     "사번 없음"
+    ]
+   }
+  },
+  {
+   "id": "mid",
+   "label": "군번",
+   "group": "E",
+   "level": "strict",
+   "numeric": false,
+   "disclose": "none",
+   "patterns": [],
+   "labels": [
+    "군번",
+    "군 번"
+   ],
+   "value": "\\d{2}-\\d{5,8}|\\d{8,10}",
+   "tests": {
+    "pos": [
+     [
+      "군번 19-76012345",
+      "19-76012345"
+     ]
+    ],
+    "neg": [
+     "군번 미기재"
+    ]
+   }
+  },
+  {
+   "id": "exam",
+   "label": "수험번호",
+   "group": "E",
+   "level": "strict",
+   "numeric": false,
+   "disclose": "none",
+   "patterns": [],
+   "labels": [
+    "수험번호",
+    "수험 번호",
+    "응시번호",
+    "응시 번호"
+   ],
+   "value": "[A-Za-z]?\\d{6,12}",
+   "tests": {
+    "pos": [
+     [
+      "수험번호 2026110234",
+      "2026110234"
+     ]
+    ],
+    "neg": [
+     "수험번호 기재란"
+    ]
+   }
+  },
+  {
+   "id": "chart",
+   "label": "환자번호",
+   "group": "E",
+   "level": "strict",
+   "numeric": false,
+   "disclose": "none",
+   "patterns": [],
+   "labels": [
+    "환자번호",
+    "환자 번호",
+    "차트번호",
+    "진료번호",
+    "병록번호",
+    "등록번호"
+   ],
+   "value": "\\d{5,10}",
+   "tests": {
+    "pos": [
+     [
+      "환자번호 00123456",
+      "00123456"
+     ],
+     [
+      "차트번호: 7788123",
+      "7788123"
+     ]
+    ],
+    "neg": [
+     "등록번호 기재"
+    ]
+   }
+  },
+  {
+   "id": "hins",
+   "label": "보험번호",
+   "group": "E",
+   "level": "strict",
+   "numeric": true,
+   "disclose": "none",
+   "patterns": [],
+   "labels": [
+    "건강보험증번호",
+    "건강보험번호",
+    "건강보험 증번호",
+    "증번호",
+    "장기요양인정번호",
+    "가입자번호",
+    "피보험자번호"
+   ],
+   "value": "\\d{10,11}|[A-Z]\\d{10}|\\d{1,2}-\\d{9,10}",
+   "tests": {
+    "pos": [
+     [
+      "건강보험증번호 12345678901",
+      "12345678901"
+     ],
+     [
+      "장기요양인정번호 L2012345678",
+      "L2012345678"
+     ]
+    ],
+    "neg": [
+     "증번호"
+    ]
+   }
+  },
+  {
+   "id": "case",
+   "label": "사건번호",
+   "group": "E",
+   "level": "strict",
+   "numeric": false,
+   "disclose": "none",
+   "patterns": [
+    {
+     "re": "(?<!\\d)(?:19|20)\\d{2}\\s?(?:가합|가단|가소|고합|고단|고정|구합|구단|드단|드합|느단|느합|하단|하합|나|다|도|노|머|카|타|재|차|아|저|허|후|라|마|무|부|스|으|즈|초|코|푸|호)\\s?\\d{1,7}(?!\\d)"
+    }
+   ],
+   "labels": [
+    "사건번호",
+    "사건 번호",
+    "사건"
+   ],
+   "value": "(?:19|20)\\d{2}\\s?[가-힣]{1,3}\\s?\\d{1,7}",
+   "tests": {
+    "pos": [
+     [
+      "사건번호 2025가합12345",
+      "2025가합12345"
+     ],
+     [
+      "2024 노 1234 항소",
+      "2024 노 1234"
+     ],
+     [
+      "사건 2023고단4567",
+      "2023고단4567"
+     ]
+    ],
+    "neg": [
+     "2026년 11월"
+    ]
+   }
+  },
+  {
+   "id": "petition",
+   "label": "민원번호",
+   "group": "E",
+   "level": "strict",
+   "numeric": false,
+   "disclose": "none",
+   "patterns": [],
+   "labels": [
+    "민원번호",
+    "민원 번호",
+    "접수번호(민원)",
+    "진정번호",
+    "신고번호"
+   ],
+   "value": "[A-Za-z0-9][A-Za-z0-9-]{5,20}",
+   "tests": {
+    "pos": [
+     [
+      "민원번호 2AA-2611-0012345",
+      "2AA-2611-0012345"
+     ]
+    ],
+    "neg": [
+     "민원번호 기재"
+    ]
+   }
+  },
+  {
+   "id": "member",
+   "label": "회원번호",
+   "group": "E",
+   "level": "strict",
+   "numeric": false,
+   "disclose": "none",
+   "patterns": [],
+   "labels": [
+    "회원번호",
+    "회원 번호",
+    "고객번호",
+    "고객 번호",
+    "멤버십번호",
+    "조합원번호",
+    "계약번호",
+    "가입번호"
+   ],
+   "value": "[A-Za-z0-9][A-Za-z0-9-]{3,20}",
+   "tests": {
+    "pos": [
+     [
+      "회원번호 M-20481",
+      "M-20481"
+     ],
+     [
+      "고객번호: 90817263",
+      "90817263"
+     ]
+    ],
+    "neg": [
+     "회원번호 란"
+    ]
+   }
+  },
+  {
+   "id": "licence",
+   "label": "자격번호",
+   "group": "E",
+   "level": "strict",
+   "numeric": false,
+   "disclose": "none",
+   "patterns": [],
+   "labels": [
+    "자격증번호",
+    "자격증 번호",
+    "자격번호",
+    "면허증번호",
+    "등록증번호",
+    "등록증 번호",
+    "허가번호",
+    "인허가번호",
+    "면허번호(운전 외)"
+   ],
+   "value": "[A-Za-z0-9][A-Za-z0-9-]{4,20}",
+   "tests": {
+    "pos": [
+     [
+      "자격증번호 12-34-5678",
+      "12-34-5678"
+     ],
+     [
+      "등록증번호 AB-0099123",
+      "AB-0099123"
+     ]
+    ],
+    "neg": [
+     "자격번호 기재"
+    ]
+   }
+  },
+  {
+   "id": "idcard",
+   "label": "증명번호",
+   "group": "E",
+   "level": "strict",
+   "numeric": false,
+   "disclose": "none",
+   "patterns": [],
+   "labels": [
+    "공무원증번호",
+    "공무원증 번호",
+    "신분증번호",
+    "신분증 번호",
+    "장애인등록번호",
+    "보훈번호",
+    "보훈 번호",
+    "국가유공자번호",
+    "등록번호(장애)",
+    "학생증번호"
+   ],
+   "value": "\\d[\\d-]{5,20}",
+   "tests": {
+    "pos": [
+     [
+      "공무원증번호 2019-004512",
+      "2019-004512"
+     ],
+     [
+      "보훈번호 7-123456",
+      "7-123456"
+     ]
+    ],
+    "neg": [
+     "신분증번호 기재"
+    ]
+   }
+  }
+ ]
+}

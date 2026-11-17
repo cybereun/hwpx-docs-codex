@@ -1,6 +1,6 @@
 ---
 name: hwpx-security
-description: Hangul security around HWPX automation — the file-access prompt (접근 허용 창) when scripts open files, batching so the user answers once, the optional official Hancom module that the user installs, and the status of password and distribution-document post-steps. Use for 한글 접근 허용 창, 보안 승인 모듈, 문서 암호.
+description: Hangul security around HWPX and HWP automation (password and distribution steps work on HWPX; protection report and hiding personal data work on both) — the file-access prompt (접근 허용 창) when scripts open files, batching so the user answers once, the optional official Hancom module that the user installs, and the status of password and distribution-document post-steps. Use for 한글 접근 허용 창, 보안 승인 모듈, 문서 암호.
 ---
 
 # Hangul security
@@ -37,7 +37,9 @@ reverse-engineered here; Hangul does the protecting.
 - Distribution document: add `--distribute [--no-print] [--no-copy]`.
 - Hide personal data (no Hangul, no password): `hd secure in.hwpx out.hwpx --mask-private` replaces resident
   numbers (back 7 digits), phone numbers, e-mail addresses and card numbers in the text with `*`. It is a text
-  replacement, not encryption. Hangul's selective protection (C11.03) and DRM (C11.05) are not available through COM.
+  replacement, not encryption. The same two commands take a `.hwp` (`--info` reads it directly; `--mask-private` writes a new
+  `.hwp` through HWPX). The password and distribution steps open and save only the file type HWPX: for a `.hwp`
+  they stop with `input and output must be .hwpx files`; protect the HWPX copy. Hangul's selective protection (C11.03) and DRM (C11.05) are not available through COM.
 - NEVER take a password as an argument, in chat for a command line, in a file or in a log. Use only an environment
   variable that the user names. Never ask for or use the user's real passwords in tests: a test sets a throwaway
   value inside its own process and deletes its files.

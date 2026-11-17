@@ -18,7 +18,7 @@ $skillRoot = Join-Path $codexHome 'skills\hwpx-docs'
 
 For a shell, use `skillRoot="${CODEX_HOME:-$HOME/.codex}/skills/hwpx-docs"`. If installed somewhere else, set `skillRoot` to that package directory. In the specialist guides, `${skillRoot}` means this resolved directory.
 
-Invoke the engine with `python "${skillRoot}/lib/hd.py" <command> ...`. Python 3.10 or newer is required. Build, read, edit, extract, and most checks use the standard library. Rendering through Hangul, HWP conversion, and password protection require the Windows/Hangul setup described in `skills/hwpx-security/SKILL.md`.
+Invoke the engine with `python "${skillRoot}/lib/hd.py" <command> ...`. Python 3.10 or newer is required. Build, read, edit, extract, and HWP 5.0 conversion use the standard library. See `docs/hwp-parity.md` for support by command. Actual Hangul rendering (`--backend hangul`), COM-based PDF export, and password protection require Windows and Hangul.
 
 ## Choose a specialist guide
 
@@ -33,6 +33,8 @@ Read `skills/hwpx-core/SKILL.md` for the common workflow, then read the relevant
 - `hwpx-gongmun` and `gongmun-style`: Korean official letters and their wording checks.
 - `hwpx-security`: Hangul security prompts, passwords, distribution documents, and privacy masking.
 - `hwpx-readability`: page fitting and readability changes only when the user asks for them.
+- `addons/hwpx-docs-forms/skills/hwpx-forms/SKILL.md`: applying a measured Korean official forms pack.
+- `addons/hwpx-docs-privacy/skills/hwpx-privacy/SKILL.md`: pseudonymized document workflows. For sensitive documents use the protected CLI, verify activation before reading, and keep originals and restored output out of direct file reads and previews.
 
 ## Core workflow
 

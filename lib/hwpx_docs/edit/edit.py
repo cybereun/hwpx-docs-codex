@@ -406,6 +406,8 @@ def main(args):
     doc = Doc(src)
 
     def many(flag):
+        if args[-1:] == [flag]:
+            raise SystemExit(f'{flag} needs a value')
         return [args[i + 1] for i, a in enumerate(args) if a == flag]
     values = json.load(open(args[args.index('--values') + 1], encoding='utf-8')) if '--values' in args else {}
     values.update(dict(x.split('=', 1) for x in many('--set')))

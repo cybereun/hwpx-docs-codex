@@ -1,0 +1,6 @@
+{
+  "name": "hwpx-docs-privacy",
+  "path": "scripts",
+  "output_filter": "hwpxpriv.engine:output_filter",
+  "write_resolver": "hwpxpriv.engine:write_resolver"
+}

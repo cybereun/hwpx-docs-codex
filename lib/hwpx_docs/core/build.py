@@ -15,11 +15,12 @@ import re
 import sys
 import zipfile
 from .units import CHAR_KEYS, DEFAULT_NUMBERING, NO_LINE, PARA_KEYS, TEMPLATE, esc, hu, inherit, line, quad, read, width_str
-from .units import PAPER, image_size  # noqa: F401  (used by callers as build.PAPER, build.image_size)
+from .units import IMAGE_MEDIA, PAPER, image_size  # noqa: F401  (used by callers as build.PAPER, build.image_size)
 from .header import Header
 from . import registry
 from ..text.text import TextMixin
 from ..table.table import TableMixin
+from ..table import inline as table_inline
 from ..objects.objects import ObjectsMixin, chart_shapes
 from ..page.page import PageMixin
 
@@ -30,6 +31,7 @@ class Doc(TextMixin, TableMixin, ObjectsMixin, PageMixin):
 
     def __init__(self, spec, base='.'):
         self.spec = spec
+        table_inline.resolve(spec)      # a table without `inline` is treated as a character unless it needs to flow (table/inline.py, TB11)
         self.base = base        # folder for relative picture paths (the spec file's folder)
         self.head = Header(read(os.path.join(TEMPLATE, 'Contents', 'header.xml')))
         self.bins = []          # (item id, file name in BinData, bytes, media type)
@@ -65,7 +67,7 @@ class Doc(TextMixin, TableMixin, ObjectsMixin, PageMixin):
             ext = 'jpg' if ext == 'jpeg' else ext
             done[name] = f'image{len(self.bins) + 1}'
             self.bins.append((done[name], f'BinData/{done[name]}.{ext}', data,
-                              {'png': 'image/png', 'jpg': 'image/jpg', 'bmp': 'image/bmp', 'gif': 'image/gif'}[ext]))
+                              IMAGE_MEDIA[ext]))
         return done[name]
 
     def define_styles(self):
@@ -170,7 +172,9 @@ class Doc(TextMixin, TableMixin, ObjectsMixin, PageMixin):
             elif 'table' in b:
                 c = inherit(ctx, b)
                 cid = self.head.char_pr(c)
-                run = f'<hp:run charPrIDRef="{cid}">{self.table(b["table"], c, inline=b["table"].get("inline", False))}<hp:t/></hp:run>'
+                if b['table'].get('inline', True) and b['table'].get('align') and 'align' not in b:
+                    b = dict(b, align=b['table']['align'])      # a table that is a character is placed by its paragraph: `align` of the table
+                run = f'<hp:run charPrIDRef="{cid}">{self.table(b["table"], c, inline=b["table"].get("inline", True))}<hp:t/></hp:run>'
                 if b.get('same_para'):
                     carry = extra + run
                     continue

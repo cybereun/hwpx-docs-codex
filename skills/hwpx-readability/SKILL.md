@@ -1,9 +1,11 @@
 ---
 name: hwpx-readability
-description: Make an HWPX easier to read across pages on request - no turning back to finish an item, tables not cut, full pages (읽기 좋게, 쪽 넘김 줄이기, 표 안 끊기게, 가독성, 쪽 꽉 차게). Not part of normal document creation.
+description: Make an HWPX or HWP (.hwp) easier to read across pages on request - no turning back to finish an item, tables not cut, full pages (읽기 좋게, 쪽 넘김 줄이기, 표 안 끊기게, 가독성, 쪽 꽉 차게). Not part of normal document creation.
 ---
 
-# HWPX readability (pagefit)
+# HWPX and HWP readability (pagefit)
+
+`hd pagefit check|fix` and `hd readability` take a `.hwp` as well as a `.hwpx`; `pagefit fix in.hwp out.hwp` writes a new `.hwp` through HWPX.
 
 `hd` = `python "${skillRoot}/lib/hd.py"`. Use it only when the user asks for it ("읽기 좋게", "쪽 넘김 줄이기", "표 안 끊기게",
 "가독성", "쪽 꽉 차게"). Never run it after a normal build (md2hwpx, hd build) on your own: this is the user's reading style.
@@ -22,7 +24,7 @@ Ask the user once whether they have their own profile file; if not, use `readabl
 
 1. Check: `hd pagefit check <file.hwpx|spec.json> --profile readable`. Show the findings (page numbers, what makes the reader turn the page, how empty a page is) in the user's language.
 2. Fix into a NEW file, never over the original: `hd pagefit fix <in> <out.hwpx> --profile readable` (prints before, the changes, after). Text, text size and the order of the content never change; only keep flags, page breaks and paragraph / table spacing do.
-3. Check in Hangul when it is installed: `hd render hwpx <out.hwpx> <dir>` (hidden Hangul, one batch) and compare the page count with the one `fix` printed. The page layout of `pagefit` follows Hangul within 1 mm on the documents measured; footnote pages are less exact.
+3. Check in Hangul when it is installed: `hd render hwpx <out.hwpx> <dir> --backend hangul` (hidden Hangul, one batch, on a safe copy) and compare the page count with the one `fix` printed. The page layout of `pagefit` follows Hangul within 1 mm on the documents measured; footnote pages are less exact.
 4. Report what is left: a page that stays empty (a unit that does not fit the free space), a sentence that points at a table on another page, a pointer to a page number ("3쪽", "다음 쪽": the numbers may have moved), a footnote that goes on, a table without header rows. These need the user's decision, not a bigger change.
 
 Limits: vertical-writing sections are skipped; the preview, not Hangul, computes the pages (steps 1-2), so step 3 is the proof.
