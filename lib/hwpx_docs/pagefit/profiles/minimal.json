@@ -1,0 +1,18 @@
+{
+  "name": "minimal",
+  "description": "The least change (what hd pagefit does with no profile): a heading keeps with the next paragraph, no single lines, a table cut after its header row moves, forced breaks after a mostly empty page go, a short last page is pulled back, free space goes into paragraph spacing.",
+  "check": {
+    "kinds": ["empty", "heading", "orphan_end", "orphan_start", "table", "order", "last", "skipped"],
+    "fill": 85,
+    "last_lines": 3
+  },
+  "fix": {
+    "keep": {"headings": true, "widow": true},
+    "units": {"strong": [], "weak": []},
+    "tables": {"cut_between_rows": false, "repeat_header": false, "min_rows": 0, "header_only_fix": true},
+    "breaks": {"remove_after_empty": true, "break_fill": 70, "heading_before_break": true, "pull_up": false, "unit_break": false},
+    "notes": {"move_paragraph": false},
+    "last_page": {"pull_back": true, "last_lines": 3, "max_shrink": 3},
+    "spacing": {"fill": true, "tables": false, "max_extra": 6, "safety": 1.5, "safety_flow": 8}
+  }
+}

@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: citizen-notice-water
+expected_outcome: |
+  notice.md is a notice for residents about a water cut on 2026. 11. 25.(수) 09:00~15:00 (or the same in everyday notation).
+  It talks to citizens with full polite predicates (~합니다, ~하시기 바랍니다, ~해 주십시오), never noun endings such as 요망, 바람, 할 것.
+  It replaces the user's hard words (익일, 금번, 요망), says what to do before and after the cut, and gives the contact number.

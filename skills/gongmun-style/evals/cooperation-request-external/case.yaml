@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: cooperation-request-external
+expected_outcome: |
+  gongmun.md holds the text of an outgoing 공문 to three universities asking them to promote a volunteer recruitment.
+  It cites the related plan as 문화정책과-1234(2026. 11. 10.), writes dates as 2026. 12. 5.(토)~12. 6.(일) and 11. 28.(토),
+  uses polite request endings (~해 주시기 바랍니다), replaces the user's hard words (금번, 송부, 만전을 기해),
+  lists two attachments with numbers and ends with 끝. after the last attachment line.

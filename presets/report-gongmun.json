@@ -1,0 +1,417 @@
+{
+ "name": "report-gongmun",
+ "LAYOUT": "css",
+ "about": "개조식 보고서 design (title box, chapter bars, □ ○ - · items, grid tables) made from an HTML design; CSS values, so the HWPX looks like the browser print of the same HTML.",
+ "FONT": {
+  "batang": "함초롬바탕",
+  "dotum": "함초롬돋움",
+  "mono": "굴림체"
+ },
+ "BORDER": {
+  "0.5pt": "0.12mm",
+  "1pt": "0.4mm",
+  "1.5pt": "0.5mm",
+  "3pt": "1.0mm"
+ },
+ "PAGE": {
+  "width_mm": 210,
+  "height_mm": 297,
+  "left_mm": 20,
+  "right_mm": 20,
+  "top_mm": 20,
+  "bottom_mm": 15
+ },
+ "TEXT": {
+  "docno": {
+   "font": "dotum",
+   "size": 10,
+   "bold": false,
+   "color": "#333333",
+   "align": "LEFT",
+   "left": 0,
+   "indent": 0,
+   "before": 0,
+   "after": 4,
+   "line": 160
+  },
+  "title": {
+   "font": "dotum",
+   "size": 22,
+   "bold": true,
+   "color": "#000000",
+   "align": "CENTER",
+   "left": 0,
+   "indent": 0,
+   "before": 0,
+   "after": 0,
+   "line": 135
+  },
+  "subtitle": {
+   "font": "dotum",
+   "size": 12.5,
+   "bold": false,
+   "color": "#000000",
+   "align": "CENTER",
+   "left": 0,
+   "indent": 0,
+   "before": 5,
+   "after": 0,
+   "line": 160
+  },
+  "date": {
+   "font": "batang",
+   "size": 11.5,
+   "bold": false,
+   "color": "#000000",
+   "align": "RIGHT",
+   "left": 0,
+   "indent": 0,
+   "before": 6,
+   "after": 12,
+   "line": 160
+  },
+  "summary": {
+   "font": "batang",
+   "size": 12,
+   "bold": false,
+   "color": "#000000",
+   "align": "JUSTIFY",
+   "left": 15,
+   "indent": -15,
+   "before": 2,
+   "after": 2,
+   "line": 160
+  },
+  "chapter": {
+   "font": "dotum",
+   "size": 15,
+   "bold": true,
+   "color": "#000000",
+   "align": "LEFT",
+   "left": 0,
+   "indent": 0,
+   "before": 0,
+   "after": 0,
+   "line": 160
+  },
+  "attach": {
+   "font": "dotum",
+   "size": 13,
+   "bold": true,
+   "color": "#000000",
+   "align": "LEFT",
+   "left": 0,
+   "indent": 0,
+   "before": 0,
+   "after": 0,
+   "line": 160
+  },
+  "item": {
+   "font": "dotum",
+   "size": 12.5,
+   "bold": true,
+   "color": "#000000",
+   "align": "JUSTIFY",
+   "left": 16,
+   "indent": -16,
+   "before": 9,
+   "after": 2,
+   "line": 160
+  },
+  "sub": {
+   "font": "dotum",
+   "size": 11,
+   "bold": true,
+   "color": "#000000",
+   "align": "LEFT",
+   "left": 0,
+   "indent": 0,
+   "before": 7,
+   "after": 1,
+   "line": 160
+  },
+  "l0": {
+   "font": "batang",
+   "size": 12,
+   "bold": false,
+   "color": "#000000",
+   "align": "JUSTIFY",
+   "left": 31,
+   "indent": -15,
+   "before": 2,
+   "after": 2,
+   "line": 160
+  },
+  "l1": {
+   "font": "batang",
+   "size": 11.5,
+   "bold": false,
+   "color": "#000000",
+   "align": "JUSTIFY",
+   "left": 43,
+   "indent": -11,
+   "before": 1,
+   "after": 1,
+   "line": 160
+  },
+  "l2": {
+   "font": "batang",
+   "size": 11,
+   "bold": false,
+   "color": "#000000",
+   "align": "JUSTIFY",
+   "left": 55,
+   "indent": -11,
+   "before": 1,
+   "after": 1,
+   "line": 160
+  },
+  "note": {
+   "font": "batang",
+   "size": 10.5,
+   "bold": false,
+   "color": "#222222",
+   "align": "JUSTIFY",
+   "left": 31,
+   "indent": -15,
+   "before": 3,
+   "after": 2,
+   "line": 160
+  },
+  "para": {
+   "font": "batang",
+   "size": 12,
+   "bold": false,
+   "color": "#000000",
+   "align": "JUSTIFY",
+   "left": 0,
+   "indent": 0,
+   "before": 3,
+   "after": 3,
+   "line": 160
+  },
+  "th": {
+   "font": "dotum",
+   "size": 10.5,
+   "bold": true,
+   "color": "#000000",
+   "align": "CENTER",
+   "left": 0,
+   "indent": 0,
+   "before": 0,
+   "after": 0,
+   "line": 145
+  },
+  "td": {
+   "font": "batang",
+   "size": 10.5,
+   "bold": false,
+   "color": "#000000",
+   "align": "LEFT",
+   "left": 0,
+   "indent": 0,
+   "before": 0,
+   "after": 0,
+   "line": 145
+  },
+  "code": {
+   "font": "mono",
+   "size": 9.5,
+   "bold": false,
+   "color": "#000000",
+   "align": "LEFT",
+   "left": 0,
+   "indent": 0,
+   "before": 0,
+   "after": 0,
+   "line": 140
+  },
+  "end": {
+   "font": "batang",
+   "size": 12,
+   "bold": false,
+   "color": "#000000",
+   "align": "RIGHT",
+   "left": 0,
+   "indent": 0,
+   "before": 14,
+   "after": 0,
+   "line": 160
+  },
+  "gap": {
+   "font": "batang",
+   "size": 4,
+   "bold": false,
+   "color": "#000000",
+   "align": "LEFT",
+   "left": 0,
+   "indent": 0,
+   "before": 0,
+   "after": 0,
+   "line": 100
+  }
+ },
+ "BOX": {
+  "title": {
+   "sides": [
+    [
+     "3pt",
+     "#1F3864"
+    ],
+    null,
+    [
+     "3pt",
+     "#1F3864"
+    ],
+    null
+   ],
+   "fill": null,
+   "pad": [
+    12,
+    6,
+    11,
+    6
+   ]
+  },
+  "summary": {
+   "sides": [
+    [
+     "1pt",
+     "#000000"
+    ],
+    [
+     "1pt",
+     "#000000"
+    ],
+    [
+     "1pt",
+     "#000000"
+    ],
+    [
+     "1pt",
+     "#000000"
+    ]
+   ],
+   "fill": "#F2F2F2",
+   "pad": [
+    8,
+    12,
+    8,
+    12
+   ]
+  },
+  "bar": {
+   "sides": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "fill": "#1F3864",
+   "pad": [
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "chapter": {
+   "sides": [
+    null,
+    null,
+    [
+     "1pt",
+     "#1F3864"
+    ],
+    null
+   ],
+   "fill": "#EEF1F6",
+   "pad": [
+    3,
+    8,
+    2,
+    8
+   ]
+  },
+  "attach": {
+   "sides": [
+    null,
+    null,
+    [
+     "1.5pt",
+     "#000000"
+    ],
+    null
+   ],
+   "fill": null,
+   "pad": [
+    0,
+    0,
+    3,
+    0
+   ]
+  },
+  "code": {
+   "sides": [
+    [
+     "0.5pt",
+     "#000000"
+    ],
+    [
+     "0.5pt",
+     "#000000"
+    ],
+    [
+     "0.5pt",
+     "#000000"
+    ],
+    [
+     "0.5pt",
+     "#000000"
+    ]
+   ],
+   "fill": "#F7F7F7",
+   "pad": [
+    5,
+    8,
+    5,
+    8
+   ]
+  }
+ },
+ "THIN": [
+  "0.5pt",
+  "#000000"
+ ],
+ "THICK": [
+  "1.5pt",
+  "#000000"
+ ],
+ "CELL_PAD": [
+  3.5,
+  5,
+  3.5,
+  5
+ ],
+ "HEAD_FILL": "#D9D9D9",
+ "BLANK_ROW_PT": 20,
+ "BAR_WIDTH_PT": 6,
+ "LIST_MARK": [
+  "○ ",
+  "- ",
+  "· "
+ ],
+ "MAP": {
+  "h5": null,
+  "h6": null,
+  "blockquote": null,
+  "list3": null,
+  "star_list": null,
+  "image": null,
+  "footnote": null,
+  "link": null,
+  "italic": null,
+  "hr": null,
+  "html": null
+ }
+}

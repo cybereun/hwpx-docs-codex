@@ -1,0 +1,43 @@
+{
+ "title": "2026년 하반기 시민 디지털 교육 참가자 모집 안내",
+ "page": {"size": "A4", "margin": {"top": 30, "bottom": 15, "left": 20, "right": 15, "header": 10, "footer": 10}},
+ "defaults": {"font": "휴먼명조", "size": 12, "align": "justify", "line": 160, "word_break": "word"},
+ "styles": {
+  "org":        {"size": 22, "bold": true, "align": "center", "after": 6, "keep_next": true},
+  "head":       {"align": "left"},
+  "subject":    {"align": "left", "after": 4},
+  "rule":       {"size": 4, "line": 100, "after": 6, "border": {"top": "0.4mm solid #000000"}},
+  "l1":         {"after": 4, "left": 0,  "indent": -15.2},
+  "l2":         {"after": 4, "left": 12, "indent": -21.2},
+  "attach":     {"align": "left", "before": 8, "after": 4, "left": 0, "indent": -51.2},
+  "attach_next": {"align": "left", "after": 4, "left": 36, "indent": -15.2},
+  "sender":     {"size": 20, "bold": true, "align": "center", "before": 40, "after": 30, "keep_next": true},
+  "tail":       {"font": "맑은 고딕", "size": 9, "align": "left", "line": 140},
+  "tail_first": {"font": "맑은 고딕", "size": 9, "align": "left", "line": 140,
+                 "border": {"top": "0.12mm solid #000000"}, "border_offset": 0.5}
+ },
+ "body": [
+  {"class": "org", "p": "가 람 시"},
+  {"class": "head", "p": "수신  수신자 참조"},
+  {"class": "head", "p": "(경유)"},
+  {"class": "subject", "p": "제목  2026년 하반기 시민 디지털 교육 참가자 모집 안내"},
+  {"class": "rule", "p": ""},
+  {"class": "l1", "p": "1. 관련: 가람시 정보통신과-2041(2026. 10. 30., “시민 디지털 교육 운영 계획”)호"},
+  {"class": "l1", "p": "2. 우리 시는 시민의 디지털 활용 능력을 높이기 위하여 하반기 디지털 교육을 다음과 같이 운영하오니 각 동에서 주민에게 널리 알려 주시기 바랍니다."},
+  {"class": "l2", "p": "가. 교육 기간: 2026. 12. 1.(화)~12. 18.(금)"},
+  {"class": "l2", "p": "나. 교육 장소: 가람시청 별관 2층 정보화교육장"},
+  {"class": "l2", "p": "다. 교육 내용: 스마트폰 기초, 공공 누리집 이용, 전자 증명서 발급"},
+  {"class": "l2", "p": "라. 모집 인원: 회차별 20명(선착순)"},
+  {"class": "l2", "p": "마. 신청 방법: 가까운 동 행정복지센터에 방문하거나 전화로 신청"},
+  {"class": "l1", "p": "3. 신청자 명단은 2026. 11. 25.(수)까지 정보통신과로 보내 주시기 바랍니다."},
+  {"class": "attach", "p": "붙임  1. 교육 일정표 1부."},
+  {"class": "attach_next", "p": "2. 참가 신청서 서식 1부.  끝."},
+  {"class": "sender", "p": "가 람 시 장"},
+  {"class": "head", "size": 10, "p": "수신자  가람시 각 동 행정복지센터장"},
+  {"class": "tail_first", "p": "주무관 한누리    팀장 서다온    정보통신과장 윤바름"},
+  {"class": "tail", "p": "협조자 기획예산과장 백나래"},
+  {"class": "tail", "p": "시행 정보통신과-2107(2026. 11. 16.)    접수"},
+  {"class": "tail", "p": "우 00000  가람시 중앙로 100(가람시청 3층) / www.example.com"},
+  {"class": "tail", "p": "전화번호 (000)000-0000  팩스번호 (000)000-0001 / digital@example.com / 공개"}
+ ]
+}

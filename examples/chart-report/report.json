@@ -1,0 +1,39 @@
+{
+ "title": "2026년 분기별 도서 대출 현황",
+ "page": {"size": "A4", "margin": {"top": 20, "bottom": 15, "left": 20, "right": 20, "header": 0, "footer": 0}},
+ "defaults": {"font": "함초롬바탕", "size": 11, "align": "justify", "line": 160, "word_break": "word"},
+ "styles": {
+  "title": {"font": "함초롬돋움", "size": 18, "bold": true, "align": "center", "after": 4, "keep_next": true},
+  "date":  {"size": 10, "align": "right", "after": 12},
+  "h":     {"font": "함초롬돋움", "size": 13, "bold": true, "before": 12, "after": 6, "keep_next": true},
+  "li":    {"left": 0, "indent": -11, "after": 3},
+  "head":  {"font": "함초롬돋움", "bold": true, "align": "center", "fill": "#EEF1F6"},
+  "num":   {"align": "right"}
+ },
+ "body": [
+  {"class": "title", "p": "2026년 분기별 도서 대출 현황"},
+  {"class": "date", "p": "가람도서관 · 2026. 11. 14.(토)"},
+  {"class": "h", "p": "1. 요약"},
+  {"class": "li", "p": "○ 1~3분기 대출은 88,700권으로 지난해 같은 기간보다 9% 늘었다."},
+  {"class": "li", "p": "○ 2분기가 31,500권으로 가장 많았고, 4분기는 33,000권으로 예상한다."},
+  {"class": "h", "p": "2. 분기별 대출 권수"},
+  {"chart": {"type": "bar", "w": 160, "h": 70, "title": "분기별 대출 권수", "unit": "권",
+             "categories": ["1분기", "2분기", "3분기", "4분기(예상)"],
+             "series": [{"name": "2025년", "values": [25100, 28600, 27700, 30200], "color": "#A5B4C8"},
+                        {"name": "2026년", "values": [27400, 31500, 29800, 33000], "color": "#2F5597"}],
+             "labels": true, "font": "맑은 고딕", "size": 8},
+   "size": 2, "line": {"fixed": 2}},
+  {"class": "h", "p": "3. 분기별 수치"},
+  {"table": {"cols": [40, 43, 43, 44], "border": "0.12mm solid #000000", "outline": "0.4mm solid #000000",
+   "margin": [0, 0, 0, 2.12], "header_rows": 1,
+   "rows": [
+    [{"class": "head", "p": "구분"}, {"class": "head", "p": "2025년(권)"}, {"class": "head", "p": "2026년(권)"},
+     {"class": "head", "p": "증감률"}],
+    [{"p": "1분기", "align": "center"}, {"class": "num", "p": "25,100"}, {"class": "num", "p": "27,400"}, {"class": "num", "p": "9.2%"}],
+    [{"p": "2분기", "align": "center"}, {"class": "num", "p": "28,600"}, {"class": "num", "p": "31,500"}, {"class": "num", "p": "10.1%"}],
+    [{"p": "3분기", "align": "center"}, {"class": "num", "p": "27,700"}, {"class": "num", "p": "29,800"}, {"class": "num", "p": "7.6%"}],
+    [{"p": "4분기(예상)", "align": "center"}, {"class": "num", "p": "30,200"}, {"class": "num", "p": "33,000"}, {"class": "num", "p": "9.3%"}]
+   ]}},
+  {"p": "※ 4분기는 10월 실적을 바탕으로 한 예상치이다.", "size": 9.5, "color": "#444444"}
+ ]
+}

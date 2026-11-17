@@ -1,0 +1,164 @@
+{
+ "eq_accents": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_bmatrix": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_brackets": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_cases": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_chem": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_colmatrix": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_doc_limsum": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_frac": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_func": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_greek": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_integral_ft": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_integral": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_ladder": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_limit": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_longdiv_blank": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_longdiv": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_matrices": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_mixed14": {
+  "base": 66,
+  "unit": 1400,
+  "w": 283,
+  "h": 283
+ },
+ "eq_nested": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_phantom": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_piles": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_root": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_scripts": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_sladder": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_spaces": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_sum": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ },
+ "eq_sup": {
+  "base": 66,
+  "unit": 1000,
+  "w": 283,
+  "h": 283
+ }
+}

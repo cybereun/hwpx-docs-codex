@@ -1,0 +1,94 @@
+{
+ "blank_p1": {
+  "coarse": 0.0,
+  "ink": 0.0
+ },
+ "bogoseo_p1": {
+  "coarse": 3.41,
+  "ink": 19.17
+ },
+ "box_doc_p1": {
+  "coarse": 7.14,
+  "ink": 10.68
+ },
+ "columns2_p1": {
+  "coarse": 4.72,
+  "ink": 11.8
+ },
+ "footnote_doc_p1": {
+  "coarse": 4.14,
+  "ink": 15.08
+ },
+ "gongmun_bodo_p1": {
+  "coarse": 3.04,
+  "ink": 11.68
+ },
+ "gyehoekseo_p1": {
+  "coarse": 3.23,
+  "ink": 18.37
+ },
+ "headfoot_p1": {
+  "coarse": 3.16,
+  "ink": 15.31
+ },
+ "headfoot_p2": {
+  "coarse": 16.33,
+  "ink": 24.1
+ },
+ "hoeuirok_p1": {
+  "coarse": 5.62,
+  "ink": 19.09
+ },
+ "landscape_p1": {
+  "coarse": 1.51,
+  "ink": 4.66
+ },
+ "numbering_p1": {
+  "coarse": 1.42,
+  "ink": 18.32
+ },
+ "pagebreak_p1": {
+  "coarse": 4.17,
+  "ink": 16.96
+ },
+ "pagebreak_p2": {
+  "coarse": 4.17,
+  "ink": 18.58
+ },
+ "paraborder_p1": {
+  "coarse": 2.49,
+  "ink": 19.62
+ },
+ "picture_doc_p1": {
+  "coarse": 1.95,
+  "ink": 2.28
+ },
+ "sections_p1": {
+  "coarse": 0.0,
+  "ink": 7.53
+ },
+ "sections_p2": {
+  "coarse": 0.0,
+  "ink": 10.64
+ },
+ "shapes_rt_handwritten_p1": {
+  "coarse": 9.2,
+  "ink": 17.65
+ },
+ "shapes_rt_p1": {
+  "coarse": 9.2,
+  "ink": 17.65
+ },
+ "sincheongseo_p1": {
+  "coarse": 5.98,
+  "ink": 7.82
+ },
+ "table_form_p1": {
+  "coarse": 1.08,
+  "ink": 14.09
+ },
+ "tabs_fields_p1": {
+  "coarse": 0.0,
+  "ink": 18.97
+ }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "readable",
+  "description": "No turning back: reading units (heading + first content, item + sub items, table or figure with its caption, introduction and notes, summary box, 붙임, last paragraph with 끝. and 결문; short sections and numbered lists when that leaves no page emptier) stay on one page; a table is not cut, or cut between rows with the header repeated and 3 rows at least in each part; pointers to other pages and footnotes that go on are reported; a table of a third of a page or more that would leave 40 mm or more empty above it is cut between rows instead of moved whole; a table kept whole holds its paragraph on its page (hold), so the text after it cannot move up before it; a table that goes over a page repeats a first row that looks like a header; free space goes into paragraph and table spacing.",
+  "extends": "minimal",
+  "check": {
+    "kinds": ["unit", "table_rows", "table_head", "table_cell", "table", "ref", "note", "order", "pageref", "heading", "orphan_end", "orphan_start", "empty", "last", "skipped"],
+    "fill": 85,
+    "last_lines": 3
+  },
+  "fix": {
+    "units": {
+      "strong": ["heading", "item", "table", "figure", "box", "attach", "tail"],
+      "weak": ["section", "list"],
+      "section_ratio": 0.4, "list_ratio": 0.5, "item_ratio": 0.8, "heading_lines": 8
+    },
+    "tables": {"cut_between_rows": true, "repeat_header": true, "min_rows": 3, "header_only_fix": true,
+               "split_gap_mm": 40, "split_min_ratio": 0.33, "free_heights": false, "hold_whole": true},
+    "breaks": {"pull_up": true, "unit_break": true},
+    "notes": {"move_paragraph": true},
+    "spacing": {"tables": true}
+  }
+}

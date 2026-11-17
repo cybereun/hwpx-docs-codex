@@ -1,0 +1,39 @@
+{
+ "title": "가람도서관 프로그램 참가 신청서",
+ "page": {"size": "A4", "margin": {"top": 20, "bottom": 15, "left": 20, "right": 20, "header": 0, "footer": 0}},
+ "defaults": {"font": "함초롬바탕", "size": 11, "align": "left", "line": 160, "word_break": "word"},
+ "styles": {
+  "title": {"font": "함초롬돋움", "size": 20, "bold": true, "align": "center", "after": 4, "keep_next": true},
+  "sub":   {"size": 9.5, "align": "center", "color": "#444444", "after": 10},
+  "label": {"font": "함초롬돋움", "bold": true, "align": "center", "fill": "#F2F2F2", "valign": "center"},
+  "group": {"font": "함초롬돋움", "bold": true, "align": "center", "fill": "#E2E8F0", "valign": "center"},
+  "note":  {"size": 9.5, "align": "justify", "left": 0, "indent": -9.5, "line": 150},
+  "sign":  {"align": "right", "before": 4}
+ },
+ "body": [
+  {"class": "title", "p": "프로그램 참가 신청서"},
+  {"class": "sub", "p": "※ 굵은 테두리 안을 적고, 해당하는 □에 ✓ 표시를 하십시오."},
+  {"table": {"cols": [24, 26, 50, 26, 44], "heights": [10, 10, 10, 10, 10, 10, 30],
+   "border": "0.12mm solid #000000", "outline": "0.4mm solid #000000", "margin": [0, 0, 0, 6.35],
+   "cell": {"valign": "center"},
+   "rows": [
+    [{"class": "group", "p": "신청인", "rs": 3}, {"class": "label", "p": "성명"}, "", {"class": "label", "p": "생년월일"}, ""],
+    [{"class": "label", "p": "연락처"}, "", {"class": "label", "p": "전자우편"}, ""],
+    [{"class": "label", "p": "주소"}, {"p": "", "cs": 3}],
+    [{"class": "group", "p": "신청 내용", "rs": 2}, {"class": "label", "p": "프로그램"},
+     {"p": "□ 어린이 책 읽기    □ 성인 인문 강좌    □ 디지털 기초", "cs": 3}],
+    [{"class": "label", "p": "수강 방식"}, {"p": "□ 도서관 방문    □ 온라인", "cs": 3}],
+    [{"class": "group", "p": "동의", "rs": 2}, {"class": "label", "p": "개인정보"},
+     {"p": "□ 동의함    □ 동의하지 않음", "cs": 3}],
+    [{"p": "", "cs": 4, "valign": "top", "blocks": [
+      {"class": "note", "p": "· 수집 항목: 성명, 생년월일, 연락처, 전자우편, 주소"},
+      {"class": "note", "p": "· 이용 목적: 프로그램 신청 확인과 일정 안내"},
+      {"class": "note", "p": "· 보유 기간: 프로그램이 끝난 날부터 1년"},
+      {"class": "note", "p": "· 동의하지 않을 수 있으나, 동의하지 않으면 신청할 수 없습니다."}]}]
+   ]}},
+  {"p": "위와 같이 프로그램 참가를 신청합니다.", "align": "center", "after": 14},
+  {"class": "sign", "p": "2026년      월      일"},
+  {"class": "sign", "p": "신청인                        (서명 또는 인)", "after": 24},
+  {"p": "가람도서관장 귀하", "font": "함초롬돋움", "size": 14, "bold": true}
+ ]
+}

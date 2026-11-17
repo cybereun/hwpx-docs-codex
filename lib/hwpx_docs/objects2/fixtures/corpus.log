@@ -1,0 +1,118 @@
+== group pic
+NAMES HDrawImageAttr ['Brightness', 'Contrast', 'DrawFillImageType', 'Embedded', 'FileInfo', 'FileNameStr', 'GradationBrush', 'ImageAdjustPrevObject', 'ImageAdjustTableCell', 'ImageAlphaEffect', 'ImageAutoRotate', 'ImageBrush', 'ImageCreateOnDrag', 'ImageCreateTreatAsChar', 'ImageInsertFileNameInCaption', 'ImageUseTextInPicture', 'InsideMarginBottom', 'InsideMarginLeft', 'InsideMarginRight', 'InsideMarginTop', 'OriginalSizeX', 'OriginalSizeY', 'PicEffectTo', 'Reverse', 'SkipBottom', 'SkipLeft', 'SkipRight', 'SkipTop', 'WindowsBrush', 'filename']
+NAMES HDrawImageScissoring ['HandleIndex', 'Xoffset', 'Yoffset']
+NAMES HDrawLineAttr ['Alpha', 'Color', 'EndCap', 'HeadFill', 'HeadSize', 'HeadStyle', 'OutLineStyle', 'TailFill', 'TailSize', 'TailStyle', 'Width', 'style']
+NAMES HCaption ['CapFullSize', 'Gap', 'Side', 'Width']
+NAMES HShapeObject ['AdjustPrevObjAttr', 'AdjustSelection', 'AdjustTextbox', 'AffectsLine', 'AllowOverlap', 'ApplyTo', 'BaseUnit', 'BorderFill', 'CellMarginBottom', 'CellMarginLeft', 'CellMarginRight', 'CellMarginTop', 'CellSpacing', 'ChangedShapeID', 'Color', 'DrawSizeInfo', 'EqFontName', 'FlowWithText', 'Height', 'HeightRelTo', 'HoldAnchorObj', 'HorzAlign', 'HorzOffset', 'HorzRelTo', 'LayoutHeight', 'LayoutWidth', 'LineMode', 'Lock', 'NumberingType', 'OptLockProperties', 'OptTargetList', 'OutsideMarginBottom', 'OutsideMarginLeft', 'OutsideMarginRight', 'OutsideMarginTop', 'PageBreak', 'PageNumber', 'ProtectSize', 'RepeatHeader', 'ShapeCaption', 'ShapeComment', 'ShapeDrawArcType', 'ShapeDrawCoordInfo', 'ShapeDrawCtrlHyperlink', 'ShapeDrawEditDetail', 'ShapeDrawFillAttr', 'ShapeDrawImageAttr', 'ShapeDrawImageScissoring', 'ShapeDrawLayOut', 'ShapeDrawLineAttr', 'ShapeDrawRectType', 'ShapeDrawResize', 'ShapeDrawRotate', 'ShapeDrawScAction', 'ShapeDrawShadow', 'ShapeDrawShear', 'ShapeDrawSoEquationOption', 'ShapeDrawSoMouseOption', 'ShapeDrawTextart', 'ShapeDrawVideoAttr', 'ShapeFormButtonAttr', 'ShapeFormCharshapeattr', 'ShapeFormComboboxAttr', 'ShapeFormCommonAttr', 'ShapeFormEditAttr', 'ShapeFormGeneral', 'ShapeFormListBoxAttr', 'ShapeFormScrollbarAttr', 'ShapeListProperites', 'ShapeTableCell', 'TableBorderFill', 'TableCharInfo', 'TextFlow', 'TextWrap', 'TreatAsChar', 'Version', 'VertAlign', 'VertOffset', 'VertRelTo', 'VisualString', 'Width', 'WidthRelTo', 'string']
+NAMES HDrawImageScissoring ['HandleIndex', 'Xoffset', 'Yoffset']
+SAVED pic_base
+SAVED pic_bright_A
+SAVED pic_bright_B
+SAVED pic_contrast_A
+SAVED pic_contrast_B
+SAVED pic_effect_gray
+SAVED pic_effect_bw
+SAVED pic_crop_B
+SAVED pic_border_B
+NAMES HDrawImageAttr ['Brightness', 'Contrast', 'DrawFillImageType', 'Embedded', 'FileInfo', 'FileNameStr', 'GradationBrush', 'ImageAdjustPrevObject', 'ImageAdjustTableCell', 'ImageAlphaEffect', 'ImageAutoRotate', 'ImageBrush', 'ImageCreateOnDrag', 'ImageCreateTreatAsChar', 'ImageInsertFileNameInCaption', 'ImageUseTextInPicture', 'InsideMarginBottom', 'InsideMarginLeft', 'InsideMarginRight', 'InsideMarginTop', 'OriginalSizeX', 'OriginalSizeY', 'PicEffectTo', 'Reverse', 'SkipBottom', 'SkipLeft', 'SkipRight', 'SkipTop', 'WindowsBrush', 'filename']
+NAMES HDrawImageScissoring ['HandleIndex', 'Xoffset', 'Yoffset']
+NAMES HDrawLineAttr ['Alpha', 'Color', 'EndCap', 'HeadFill', 'HeadSize', 'HeadStyle', 'OutLineStyle', 'TailFill', 'TailSize', 'TailStyle', 'Width', 'style']
+NAMES HCaption ['CapFullSize', 'Gap', 'Side', 'Width']
+NAMES HShapeObject ['AdjustPrevObjAttr', 'AdjustSelection', 'AdjustTextbox', 'AffectsLine', 'AllowOverlap', 'ApplyTo', 'BaseUnit', 'BorderFill', 'CellMarginBottom', 'CellMarginLeft', 'CellMarginRight', 'CellMarginTop', 'CellSpacing', 'ChangedShapeID', 'Color', 'DrawSizeInfo', 'EqFontName', 'FlowWithText', 'Height', 'HeightRelTo', 'HoldAnchorObj', 'HorzAlign', 'HorzOffset', 'HorzRelTo', 'LayoutHeight', 'LayoutWidth', 'LineMode', 'Lock', 'NumberingType', 'OptLockProperties', 'OptTargetList', 'OutsideMarginBottom', 'OutsideMarginLeft', 'OutsideMarginRight', 'OutsideMarginTop', 'PageBreak', 'PageNumber', 'ProtectSize', 'RepeatHeader', 'ShapeCaption', 'ShapeComment', 'ShapeDrawArcType', 'ShapeDrawCoordInfo', 'ShapeDrawCtrlHyperlink', 'ShapeDrawEditDetail', 'ShapeDrawFillAttr', 'ShapeDrawImageAttr', 'ShapeDrawImageScissoring', 'ShapeDrawLayOut', 'ShapeDrawLineAttr', 'ShapeDrawRectType', 'ShapeDrawResize', 'ShapeDrawRotate', 'ShapeDrawScAction', 'ShapeDrawShadow', 'ShapeDrawShear', 'ShapeDrawSoEquationOption', 'ShapeDrawSoMouseOption', 'ShapeDrawTextart', 'ShapeDrawVideoAttr', 'ShapeFormButtonAttr', 'ShapeFormCharshapeattr', 'ShapeFormComboboxAttr', 'ShapeFormCommonAttr', 'ShapeFormEditAttr', 'ShapeFormGeneral', 'ShapeFormListBoxAttr', 'ShapeFormScrollbarAttr', 'ShapeListProperites', 'ShapeTableCell', 'TableBorderFill', 'TableCharInfo', 'TextFlow', 'TextWrap', 'TreatAsChar', 'Version', 'VertAlign', 'VertOffset', 'VertRelTo', 'VisualString', 'Width', 'WidthRelTo', 'string']
+SAVED pic_border_B
+JOB FAIL pic_border_W com_error(-2147023170, '원격 프로시저를 호출하지 못했습니다.', None, None)
+HANGUL KILLED at pic_border_W
+NAMES HDrawImageAttr ['Brightness', 'Contrast', 'DrawFillImageType', 'Embedded', 'FileInfo', 'FileNameStr', 'GradationBrush', 'ImageAdjustPrevObject', 'ImageAdjustTableCell', 'ImageAlphaEffect', 'ImageAutoRotate', 'ImageBrush', 'ImageCreateOnDrag', 'ImageCreateTreatAsChar', 'ImageInsertFileNameInCaption', 'ImageUseTextInPicture', 'InsideMarginBottom', 'InsideMarginLeft', 'InsideMarginRight', 'InsideMarginTop', 'OriginalSizeX', 'OriginalSizeY', 'PicEffectTo', 'Reverse', 'SkipBottom', 'SkipLeft', 'SkipRight', 'SkipTop', 'WindowsBrush', 'filename']
+NAMES HDrawImageScissoring ['HandleIndex', 'Xoffset', 'Yoffset']
+NAMES HDrawLineAttr ['Alpha', 'Color', 'EndCap', 'HeadFill', 'HeadSize', 'HeadStyle', 'OutLineStyle', 'TailFill', 'TailSize', 'TailStyle', 'Width', 'style']
+NAMES HCaption ['CapFullSize', 'Gap', 'Side', 'Width']
+NAMES HShapeObject ['AdjustPrevObjAttr', 'AdjustSelection', 'AdjustTextbox', 'AffectsLine', 'AllowOverlap', 'ApplyTo', 'BaseUnit', 'BorderFill', 'CellMarginBottom', 'CellMarginLeft', 'CellMarginRight', 'CellMarginTop', 'CellSpacing', 'ChangedShapeID', 'Color', 'DrawSizeInfo', 'EqFontName', 'FlowWithText', 'Height', 'HeightRelTo', 'HoldAnchorObj', 'HorzAlign', 'HorzOffset', 'HorzRelTo', 'LayoutHeight', 'LayoutWidth', 'LineMode', 'Lock', 'NumberingType', 'OptLockProperties', 'OptTargetList', 'OutsideMarginBottom', 'OutsideMarginLeft', 'OutsideMarginRight', 'OutsideMarginTop', 'PageBreak', 'PageNumber', 'ProtectSize', 'RepeatHeader', 'ShapeCaption', 'ShapeComment', 'ShapeDrawArcType', 'ShapeDrawCoordInfo', 'ShapeDrawCtrlHyperlink', 'ShapeDrawEditDetail', 'ShapeDrawFillAttr', 'ShapeDrawImageAttr', 'ShapeDrawImageScissoring', 'ShapeDrawLayOut', 'ShapeDrawLineAttr', 'ShapeDrawRectType', 'ShapeDrawResize', 'ShapeDrawRotate', 'ShapeDrawScAction', 'ShapeDrawShadow', 'ShapeDrawShear', 'ShapeDrawSoEquationOption', 'ShapeDrawSoMouseOption', 'ShapeDrawTextart', 'ShapeDrawVideoAttr', 'ShapeFormButtonAttr', 'ShapeFormCharshapeattr', 'ShapeFormComboboxAttr', 'ShapeFormCommonAttr', 'ShapeFormEditAttr', 'ShapeFormGeneral', 'ShapeFormListBoxAttr', 'ShapeFormScrollbarAttr', 'ShapeListProperites', 'ShapeTableCell', 'TableBorderFill', 'TableCharInfo', 'TextFlow', 'TextWrap', 'TreatAsChar', 'Version', 'VertAlign', 'VertOffset', 'VertRelTo', 'VisualString', 'Width', 'WidthRelTo', 'string']
+SAVED pic_border_W
+SAVED pic_border_C
+SAVED pic_border_D
+JOB FAIL pic_border_E com_error(-2147023170, '원격 프로시저를 호출하지 못했습니다.', None, None)
+HANGUL KILLED at pic_border_E
+SAVED rect_wrap_0
+SAVED rect_wrap_1
+SAVED rect_wrap_2
+SAVED rect_wrap_3
+SAVED rect_anchor_paper
+SAVED rect_anchor_page
+SAVED rect_anchor_para
+SAVED rect_anchor_para_column
+SAVED rect_align_center
+SAVED rect_flow_off
+SAVED pic_caption_A
+  SelectCtrl FAIL com_error(-2147352561, '필수 매개 변수입니다.', None, None)
+SAVED pic_caption_B
+SAVED rect_caption_A
+  SelectCtrl FAIL com_error(-2147352561, '필수 매개 변수입니다.', None, None)
+SAVED rect_caption_B
+SAVED group_A
+  GROUP FAIL SelectCtrl2 com_error(-2147352561, '필수 매개 변수입니다.', None, None)
+  GROUP via ShapeObjSelectAll
+SAVED group_B
+== group probe
+ACTION ProofreadingMark none
+ACTION ProofreadMark none
+ACTION InsertProofreadMark none
+ACTION ProofreadSymbol none
+ACTION CorrectionSign none
+ACTION InsertCorrectionSign none
+ACTION ProofSign none
+ACTION DrawObjTemplateLoad OK
+ACTION DrawObjTemplateSave OK
+ACTION InsertCorrectionMark none
+ACTION DocCorrectionMark none
+ACTION ProofreadingSymbols none
+ACTION InsertTextart none
+ACTION ConnectLineCreate none
+ACTION DrawObjCreatorConnectLine none
+ACTION DrawObjCreatorConnector none
+ACTION InsertOleObject none
+ACTION OleCreation none
+ACTION InsertObject none
+ACTION InsertFile OK
+NAMES HDrawTextart ['AlignType', 'Apply', 'CharSpacing', 'FontName', 'FontStyle', 'FontType', 'LineSpacing', 'NumberOfLines', 'ShadowColor', 'ShadowOffsetX', 'ShadowOffsetY', 'ShadowType', 'Shape', 'string']
+NAMES HDrawConnectLine ['type']
+NAMES HOleCreation ['Aspect', 'Clsid', 'FlashProperties', 'IconMM', 'IconMetafile', 'IconXext', 'IconYext', 'InnerOCX', 'MovieProperties', 'Path', 'SoProperties', 'type']
+NAMES HDrawCoordInfo ['Count', 'Line', 'Point']
+NAMES HDrawEditDetail ['Command', 'PointX', 'PointY', 'index']
+NAMES HDrawLayOut ['CreateNumPt', 'CreatePt', 'CurveSegmentInfo']
+PROBE connector $col inserted 0
+SAVED probe_connector_col
+PROBE connector $cnl inserted 0
+SAVED probe_connector_cnl
+PROBE textart $tar inserted 0
+SAVED probe_textart_tar
+PROBE textart $txa inserted 0
+SAVED probe_textart_txa
+PROBE textart $art inserted 0
+SAVED probe_textart_art
+PROBE polygon $pol inserted 1
+SAVED probe_polygon_pol
+PROBE curve $cur inserted 1
+SAVED probe_curve_cur
+PROBE ole $ole inserted 0
+SAVED probe_ole_ole
+SAVED ta_shapes
+SAVED ta_align
+SAVED ta_spacing
+SAVED ta_shadow
+SAVED ta_font
+SAVED ta_shapes
+SAVED ta_align
+JOB FAIL ta_spacing com_error(-2147023170, '원격 프로시저를 호출하지 못했습니다.', None, None)
+HANGUL KILLED at ta_spacing
+SAVED ta_spacing
+SAVED ta_shadow
+SAVED ta_font
+  GROUP via SelectCtrl2
+SAVED group_B
+SAVED pic_caption_side_0
+JOB FAIL pic_caption_side_1 com_error(-2147023170, '원격 프로시저를 호출하지 못했습니다.', None, None)
+HANGUL KILLED at pic_caption_side_1
+SAVED pic_caption_side_3
+SAVED pic_caption_wide
+SAVED pic_caption_side_1
+SAVED pic_caption_side_2

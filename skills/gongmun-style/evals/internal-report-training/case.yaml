@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: internal-report-training
+expected_outcome: |
+  report.md is an internal 개조식 report "개인정보 보호 교육 결과 보고" with item symbols in the order 1. -> 가.,
+  date 2026. 11. 12.(목) and time 14:00~16:00, all numbers (120명, 108명, 90%, 4.3점, 12명) kept,
+  개조식 lines that keep particles (no noun stacking), and the user's hard words replaced (향후, 익일).

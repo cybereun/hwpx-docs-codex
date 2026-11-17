@@ -1,0 +1,48 @@
+{
+  "_note": "Machine-readable copy of references/structure.md. Ids are stable. indent_ta = 타 (character cells); 2타 = 1 한글 char = 2 half-width chars. No official pt or mm value exists (see structure.md section 2). Sources: S01 (2025 행정업무운영 편람), S02 (시행규칙 제2조, 제4조).",
+  "levels": [
+    {"id": "L1", "symbol": "1.",  "next": "2.",  "indent_ta": 0,  "indent_hangul_chars": 0, "source": "S01 §4 다, S02 제2조①"},
+    {"id": "L2", "symbol": "가.", "next": "나.", "indent_ta": 2,  "indent_hangul_chars": 1, "source": "S01 §4 다, S02 제2조①"},
+    {"id": "L3", "symbol": "1)",  "next": "2)",  "indent_ta": 4,  "indent_hangul_chars": 2, "source": "S01 §4 다, S02 제2조①"},
+    {"id": "L4", "symbol": "가)", "next": "나)", "indent_ta": 6,  "indent_hangul_chars": 3, "source": "S01 §4 다, S02 제2조①"},
+    {"id": "L5", "symbol": "(1)", "next": "(2)", "indent_ta": 8,  "indent_hangul_chars": 4, "source": "S01 §4 다, S02 제2조①"},
+    {"id": "L6", "symbol": "(가)", "next": "(나)", "indent_ta": 10, "indent_hangul_chars": 5, "source": "S01 §4 다, S02 제2조①"},
+    {"id": "L7", "symbol": "①",   "next": "②",   "indent_ta": 12, "indent_hangul_chars": 6, "source": "S01 §4 다, S02 제2조①"},
+    {"id": "L8", "symbol": "㉮",   "next": "㉯",   "indent_ta": 14, "indent_hangul_chars": 7, "source": "S01 §4 다, S02 제2조①"}
+  ],
+  "item_rules": {
+    "gap_after_symbol_ta": 1,
+    "indent_step_ta": 2,
+    "single_item_has_no_symbol": true,
+    "hangul_sequence": "가나다라마바사아자차카타파하, then 거너더러머버서어저처커터퍼허 when a level has more than 14 items",
+    "wrapped_line": "align to the first letter of the item text (원칙) or to the left base line; one way per document",
+    "source": "S01 §4 다, S02 제2조①"
+  },
+  "end_cases": [
+    {"id": "E1", "text": "Body ends with text: after the last character, 2 spaces, then `끝.`", "source": "S02 제4조⑤, S01 §5 다.4)"},
+    {"id": "E2", "text": "Last line reaches the right limit: next line at the left base line, 2 spaces, then `끝.`", "source": "S02 제4조⑤"},
+    {"id": "E3", "text": "Body ends with a table and the last cell is filled: below the table at the left base line, 2 spaces, then `끝.`", "source": "S02 제4조⑤"},
+    {"id": "E4", "text": "Table ends before the last row or cell: no `끝.`; write `이하 빈칸` in the cell after the last filled cell", "source": "S02 제4조⑤"},
+    {"id": "E5", "text": "The document has 붙임: `끝.` goes after the last 붙임 line, not after the body", "source": "S02 제4조⑤"},
+    {"id": "E6", "text": "Draft by 문서관리카드: `끝.` may be omitted", "source": "S02 제21조"}
+  ],
+  "attach_cases": [
+    {"id": "A1", "text": "One attachment, no number: `붙임  ○○○계획서 1부.  끝.`", "source": "S01 §5 다.3)"},
+    {"id": "A2", "text": "Two or more: `붙임  1. ○○○계획서 1부.` then `2. ○○○서류 1부.  끝.` (no colon after 붙임)", "source": "S01 §5 다.3)"}
+  ],
+  "blocks": [
+    {"id": "HEAD_ORG",       "part": "두문", "text": "행정기관명"},
+    {"id": "HEAD_RECIPIENT", "part": "두문", "text": "수신란: `수신  ○○○장관(○○○과장)` / `수신  내부결재` / `수신  수신자 참조`"},
+    {"id": "HEAD_VIA",       "part": "두문", "text": "(경유): blank if none"},
+    {"id": "BODY_TITLE",     "part": "본문", "text": "제목: short and clear"},
+    {"id": "BODY_CONTENT",   "part": "본문", "text": "내용: opening sentence"},
+    {"id": "BODY_ITEMS",     "part": "본문", "text": "항목 list (levels L1..L8)"},
+    {"id": "BODY_ATTACH",    "part": "본문", "text": "붙임 lines (A1, A2)"},
+    {"id": "BODY_END",       "part": "본문", "text": "`끝.` mark (E1..E6)"},
+    {"id": "TAIL_SENDER",    "part": "결문", "text": "발신 명의"},
+    {"id": "TAIL_SIGN",      "part": "결문", "text": "기안자, 검토자, 협조자, 결재권자: 직위(직급) and signature"},
+    {"id": "TAIL_NUMBERS",   "part": "결문", "text": "생산등록번호, 시행일, 접수등록번호, 접수일"},
+    {"id": "TAIL_ADDRESS",   "part": "결문", "text": "우편번호, 주소, 홈페이지"},
+    {"id": "TAIL_CONTACT",   "part": "결문", "text": "전화, 팩스, 전자우편, 공개 구분"}
+  ]
+}

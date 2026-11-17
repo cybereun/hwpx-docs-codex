@@ -1,0 +1,43 @@
+{
+ "title": "가람도서관 운영위원회 2026년 제3차 회의록",
+ "page": {"size": "A4", "margin": {"top": 20, "bottom": 15, "left": 20, "right": 20, "header": 0, "footer": 0}},
+ "defaults": {"font": "함초롬바탕", "size": 11, "align": "justify", "line": 160, "word_break": "word"},
+ "styles": {
+  "title": {"font": "함초롬돋움", "size": 20, "bold": true, "align": "center", "after": 14},
+  "label": {"font": "함초롬돋움", "bold": true, "align": "center", "fill": "#EEF1F6", "valign": "center"},
+  "item":  {"align": "left", "left": 0, "indent": -11},
+  "head":  {"font": "함초롬돋움", "bold": true, "align": "center", "fill": "#EEF1F6"},
+  "c":     {"align": "center"}
+ },
+ "body": [
+  {"class": "title", "p": "회 의 록"},
+  {"table": {"cols": [30, 140], "border": "0.12mm solid #000000", "outline": "0.4mm solid #000000",
+   "margin": [0, 0, 0, 4.94], "pad": [2.5, 2.5, 1.5, 1.5],
+   "cell": {"valign": "center"},
+   "rows": [
+    [{"class": "label", "p": "회의명"}, "가람도서관 운영위원회 2026년 제3차 회의"],
+    [{"class": "label", "p": "일시"}, "2026. 9. 17.(목) 15:00~16:30"],
+    [{"class": "label", "p": "장소"}, "가람도서관 2층 세미나실"],
+    [{"class": "label", "p": "참석"}, "위원장 포함 위원 7명, 사무국 2명"],
+    [{"class": "label", "p": "안건"}, {"blocks": [
+      {"class": "item", "p": "1. 하반기 토요일 운영 시간 조정"},
+      {"class": "item", "p": "2. 어린이 프로그램 회차 확대"}]}],
+    [{"class": "label", "p": "논의 내용"}, {"valign": "top", "blocks": [
+      {"class": "item", "p": "○ 토요일 이용자가 평일의 두 배이므로 운영 시간을 20:00까지 늘리자는 안에 위원 전원이 찬성함"},
+      {"class": "item", "p": "○ 야간 안전 관리를 위해 시간제 근무자 2명을 두기로 하고, 비용은 기존 운영비 안에서 조정함"},
+      {"class": "item", "p": "○ 어린이 책 읽기 대기자가 회차당 평균 15명이어서 월 6회로 늘리는 데 의견이 모임"}]}],
+    [{"class": "label", "p": "결정 사항"}, {"blocks": [
+      {"class": "item", "p": "1. 2026. 10. 3.(토)부터 토요일은 20:00까지 운영함"},
+      {"class": "item", "p": "2. 어린이 책 읽기를 10월부터 월 6회로 늘림"}]}]
+   ]}},
+  {"p": "향후 일정", "font": "함초롬돋움", "size": 12, "bold": true, "after": 6, "keep_next": true},
+  {"table": {"cols": [90, 40, 40], "border": "0.12mm solid #000000", "outline": "0.4mm solid #000000", "margin": 0,
+   "header_rows": 1,
+   "rows": [
+    [{"class": "head", "p": "업무"}, {"class": "head", "p": "담당"}, {"class": "head", "p": "기한"}],
+    ["운영 시간 변경 안내문 게시", {"class": "c", "p": "사무국"}, {"class": "c", "p": "2026. 9. 25.(금)"}],
+    ["시간제 근무자 채용 공고", {"class": "c", "p": "평생학습과"}, {"class": "c", "p": "2026. 9. 30.(수)"}],
+    ["어린이 프로그램 강사 섭외", {"class": "c", "p": "사무국"}, {"class": "c", "p": "2026. 9. 30.(수)"}]
+   ]}}
+ ]
+}
